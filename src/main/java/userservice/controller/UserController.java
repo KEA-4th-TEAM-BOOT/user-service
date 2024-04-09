@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import userservice.domain.User;
+import userservice.dto.request.BaseUserRequestDto;
 import userservice.repository.UserRepository;
 import userservice.service.UserService;
 import userservice.vo.BaseUserEnumVo;
@@ -22,8 +23,8 @@ public class UserController {
         return userService.hello();
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<User> createUser(@RequestBody BaseUserEnumVo baseUserEnumVo){
-        return UserService.createUser(baseUserEnumVo);
+    @PostMapping("")
+    public ResponseEntity<User> createUser(@RequestBody BaseUserRequestDto baseUserRequestDto) {
+        return UserService.createUser(baseUserRequestDto);
     }
 }

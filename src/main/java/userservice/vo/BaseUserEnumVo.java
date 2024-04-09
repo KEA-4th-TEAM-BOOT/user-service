@@ -5,6 +5,8 @@ import lombok.Builder;
 import userservice.dto.request.BaseUserRequestDto;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
+
 @Builder
 public record BaseUserEnumVo(
 
@@ -18,9 +20,7 @@ public record BaseUserEnumVo(
         Integer followingNum,
         Integer followerNum,
         Integer latestPostId,
-        String state,
-        LocalDateTime createdTime,
-        LocalDateTime modifiedTime
+        String state
 ) {
     public static BaseUserEnumVo of(BaseUserRequestDto baseUserRequestDto,
                                     BaseUserEnumVo baseUserEnumVo){
@@ -29,15 +29,13 @@ public record BaseUserEnumVo(
                 .email(baseUserRequestDto.email())
                 .password(baseUserRequestDto.password())
                 .nickname(baseUserRequestDto.nickname())
-                .profileUrl(baseUserEnumVo.profileUrl)
-                .introduce(baseUserEnumVo.introduce)
+                .profileUrl(Optional.ofNullable(baseUserEnumVo.profileUrl).orElse(""))
+                .introduce(Optional.ofNullable(baseUserEnumVo.introduce).orElse(""))
                 .blogUrl(baseUserRequestDto.blogUrl())
                 .followingNum(baseUserEnumVo.followingNum)
                 .followerNum(baseUserEnumVo.followerNum)
                 .latestPostId(baseUserEnumVo.latestPostId)
                 .state(baseUserEnumVo.state)
-                .createdTime(baseUserEnumVo.createdTime)
-                .modifiedTime(baseUserEnumVo.modifiedTime)
                 .build();
     }
 }

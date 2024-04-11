@@ -58,5 +58,11 @@ public class User extends BaseTimeEntity {
                 .blogUrl(baseUserRequestDto.blogUrl())
                 .build();
     }
+
+    public void updateUser(BaseUserEnumVo baseUserEnumVo){
+        this.profileUrl = baseUserEnumVo.profileUrl();
+        this.nickname = baseUserEnumVo.nickname();
+        this.introduce = baseUserEnumVo.introduce();
+    }
 }
 

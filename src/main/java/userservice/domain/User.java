@@ -8,10 +8,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.UpdateTimestamp;
 import userservice.dto.request.BaseUserRequestDto;
+import userservice.dto.response.BaseUserResponseDto;
 import userservice.global.BaseTimeEntity;
 import userservice.vo.BaseUserEnumVo;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -46,8 +49,11 @@ public class User extends BaseTimeEntity {
     private Integer followerNum;
     @ColumnDefault("0")
     private Integer latestPostId;
+    @Getter
     @Column(length = 10)
-    private String state;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Category> categoryList = new ArrayList<>();
 
     public static User createUser(BaseUserRequestDto baseUserRequestDto){
         return User.builder()
@@ -60,9 +66,17 @@ public class User extends BaseTimeEntity {
     }
 
     public void updateUser(BaseUserEnumVo baseUserEnumVo){
-        this.profileUrl = baseUserEnumVo.profileUrl();
         this.nickname = baseUserEnumVo.nickname();
+        this.profileUrl = baseUserEnumVo.profileUrl();
         this.introduce = baseUserEnumVo.introduce();
+        this.followingNum = baseUserEnumVo.followingNum();
+        this.followerNum = baseUserEnumVo.followerNum();
+        this.latestPostId = baseUserEnumVo.latestPostId();
     }
+
+    public void addCategory(Category category){
+        this.categoryList.add(category);
+    }
+
 }
 

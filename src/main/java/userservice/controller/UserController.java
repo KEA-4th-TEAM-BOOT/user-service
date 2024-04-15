@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import userservice.domain.User;
 import userservice.dto.request.BaseUserRequestDto;
+import userservice.dto.response.BaseUserResponseDto;
 import userservice.service.UserService;
 import userservice.vo.BaseUserEnumVo;
 
@@ -24,19 +25,19 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> getUser(@PathVariable Long id){
-        Optional<User> user = userService.getUser(id);
-        return ResponseEntity.ok(user);
+    @GetMapping("/users/{id}")
+    public ResponseEntity<BaseUserResponseDto> getUser(@PathVariable Long id){
+        BaseUserResponseDto userResponseDto = userService.getUser(id);
+        return ResponseEntity.ok(userResponseDto);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/users/{id}")
     public ResponseEntity<Void> updateUser(@PathVariable Long id, @RequestBody BaseUserEnumVo baseUserEnumVo){
         userService.updateUser(id, baseUserEnumVo);
         return ResponseEntity.status(HttpStatus.OK).build();

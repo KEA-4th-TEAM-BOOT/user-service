@@ -9,7 +9,6 @@ import java.util.Optional;
 
 @Builder
 public record BaseUserEnumVo(
-
         String name,
         String email,
         String password,
@@ -23,7 +22,7 @@ public record BaseUserEnumVo(
         String state
 ) {
     public static BaseUserEnumVo of(BaseUserRequestDto baseUserRequestDto,
-                                    BaseUserEnumVo baseUserEnumVo){
+                                    BaseUserEnumVo baseUserEnumVo) {
         return BaseUserEnumVo.builder()
                 .name(baseUserRequestDto.name())
                 .email(baseUserRequestDto.email())
@@ -39,6 +38,3 @@ public record BaseUserEnumVo(
                 .build();
     }
 }
-
-
-

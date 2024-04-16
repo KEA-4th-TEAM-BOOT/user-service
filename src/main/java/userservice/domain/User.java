@@ -55,6 +55,11 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Category> categoryList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "followerUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Follow> followerList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "followedUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Follow> followedList = new ArrayList<>();
     public static User createUser(BaseUserRequestDto baseUserRequestDto){
         return User.builder()
                 .name(baseUserRequestDto.name())
@@ -78,5 +83,14 @@ public class User extends BaseTimeEntity {
         this.categoryList.add(category);
     }
 
+    public void addFollowerUser(Follow follow){
+        this.followerList.add(follow);
+    }
+    public void addFollowedUser(Follow follow){
+        this.followedList.add(follow);
+    }
+
 }
 
+// // follow schema
+// id / user_id /

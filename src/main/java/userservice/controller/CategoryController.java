@@ -3,14 +3,11 @@ package userservice.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import userservice.domain.Category;
-import userservice.dto.CategoryResponseDto;
+import userservice.dto.response.CategoryResponseDto;
 import userservice.service.CategoryService;
 import userservice.vo.BaseCategoryEnumVo;
-import userservice.vo.BaseUserEnumVo;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class CategoryController {
@@ -29,8 +26,7 @@ public class CategoryController {
 
     @GetMapping("/category/{id}")
     public List<CategoryResponseDto> getCategory(@PathVariable Long id) {
-        List<CategoryResponseDto> categoryList = categoryService.getCategoryList(id);
-        return categoryList;
+        return categoryService.getCategoryList(id);
     }
 
     @DeleteMapping("/category/{id}")

@@ -7,6 +7,9 @@ import org.hibernate.annotations.DynamicInsert;
 import userservice.global.BaseTimeEntity;
 import userservice.vo.BaseCategoryEnumVo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @DynamicInsert
@@ -28,6 +31,9 @@ public class Category extends BaseTimeEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<SubCategory> subCategoryList = new ArrayList<>();
+
     public static Category createCategory(User user, String categoryName){
         Category category = Category.builder()
                 .user(user)
@@ -41,23 +47,11 @@ public class Category extends BaseTimeEntity {
         this.categoryName = baseCategoryEnumVo.categoryName();
         this.existSubCategory = baseCategoryEnumVo.existSubCategory();
     }
+
+    public void addSubCategory(SubCategory subCategory){
+        this.subCategoryList.add(subCategory);
+    }
 }
 
 
-// "categoryList": [ "string1", "string2" ]
-// 네트워크
-// 파이썬
-// 카테고리3
-    //카테고리 c++
-    //카테고리 자바
-// 운체
 
-// category_id   categoryname subCategory
-//      1            네트워크      네트워크
-//      2            파이썬        자바
-//      3            카테고리3      c++
-//      4            카테고리3      자바
-//      5            카테고리3      자바
-//      6            운체          운체
-
-//    public void updateCategory()

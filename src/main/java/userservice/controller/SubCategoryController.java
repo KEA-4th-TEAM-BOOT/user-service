@@ -29,15 +29,15 @@ public class SubCategoryController {
         return ResponseEntity.ok(subCategoryList);
     }
 
-    @DeleteMapping("/subCategory/{subCategory_id}")
-    public ResponseEntity<Void> deleteSubCategory(@PathVariable Long subCategory_id){
-        subCategoryService.deleteSubCategory(subCategory_id);
+    @DeleteMapping("/subCategory/{id}")
+    public ResponseEntity<Void> deleteSubCategory(@PathVariable Long id){
+        subCategoryService.deleteSubCategory(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PatchMapping("/subCategory/{subCategory_id}")
-    public ResponseEntity<Void> updateSubCategory(@PathVariable Long subCategory_id, String subCategoryName){
-        subCategoryService.updateSubCategory(subCategory_id, subCategoryName);
+    @PatchMapping("/subCategory/{id}")
+    public ResponseEntity<Void> updateSubCategory(@PathVariable Long id, String subCategoryName){
+        subCategoryService.updateSubCategory(id, subCategoryName);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

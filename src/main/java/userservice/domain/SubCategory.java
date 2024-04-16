@@ -17,6 +17,7 @@ public class SubCategory extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(length = 30)
     private String subCategoryName;
 
     @ManyToOne

@@ -18,15 +18,15 @@ public class CategoryController {
         this.categoryService = controllerService;
     }
 
-    @PostMapping("/category/{id}")
-    public ResponseEntity<String> createCategory(@PathVariable Long id, @RequestBody String categoryName) {
-        categoryService.createCategory(id, categoryName);
+    @PostMapping("/category/{user_id}")
+    public ResponseEntity<String> createCategory(@PathVariable Long user_id, @RequestBody String categoryName) {
+        categoryService.createCategory(user_id, categoryName);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/category/{id}")
-    public List<CategoryResponseDto> getCategory(@PathVariable Long id) {
-        return categoryService.getCategoryList(id);
+    @GetMapping("/category/{user_id}")
+    public List<CategoryResponseDto> getCategory(@PathVariable Long user_id) {
+        return categoryService.getCategoryList(user_id);
     }
 
     @DeleteMapping("/category/{id}")

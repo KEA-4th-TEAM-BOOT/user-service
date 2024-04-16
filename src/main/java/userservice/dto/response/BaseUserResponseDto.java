@@ -2,9 +2,7 @@ package userservice.dto.response;
 
 import lombok.AccessLevel;
 import lombok.Builder;
-import userservice.domain.Category;
 import userservice.domain.User;
-import userservice.dto.CategoryResponseDto;
 
 import java.util.List;
 

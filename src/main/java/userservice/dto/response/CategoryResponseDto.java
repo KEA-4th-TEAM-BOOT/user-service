@@ -1,4 +1,4 @@
-package userservice.dto;
+package userservice.dto.response;
 
 import java.util.List;
 

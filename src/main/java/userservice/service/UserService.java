@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import userservice.domain.User;
+import userservice.dto.request.BaseUserUpdateRequestDto;
 import userservice.dto.response.CategoryResponseDto;
 import userservice.dto.request.BaseUserRequestDto;
 import userservice.dto.response.BaseUserResponseDto;
@@ -31,9 +32,9 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public void updateUser(Long id, BaseUserEnumVo baseUserEnumVo) {
+    public void updateUser(Long id, BaseUserUpdateRequestDto baseUserUpdateRequestDto) {
         Optional<User> user = Optional.of(userRepository.findById(id).orElseThrow());
-        user.get().updateUser(baseUserEnumVo);
+        user.get().updateUser(baseUserUpdateRequestDto);
     }
 
     public BaseUserResponseDto getUser(Long id) {

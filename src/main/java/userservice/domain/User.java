@@ -8,13 +8,17 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.UpdateTimestamp;
 import userservice.dto.request.BaseUserRequestDto;
+import userservice.dto.request.BaseUserUpdateRequestDto;
 import userservice.dto.response.BaseUserResponseDto;
 import userservice.global.BaseTimeEntity;
+import userservice.global.UserUpdateValue;
 import userservice.vo.BaseUserEnumVo;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static userservice.global.UserUpdateValue.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -29,7 +33,6 @@ public class User extends BaseTimeEntity {
     private Long id;
     @Column(length = 100)
     private String name;
-
 //    @Email    나중에 다시 주석 뺴주기
     @Column(length = 100)
     private String email;
@@ -49,8 +52,6 @@ public class User extends BaseTimeEntity {
     private Integer followerNum;
     @ColumnDefault("0")
     private Integer latestPostId;
-    @Getter
-    @Column(length = 10)
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Category> categoryList = new ArrayList<>();
@@ -70,13 +71,17 @@ public class User extends BaseTimeEntity {
                 .build();
     }
 
-    public void updateUser(BaseUserEnumVo baseUserEnumVo){
-        this.nickname = baseUserEnumVo.nickname();
-        this.profileUrl = baseUserEnumVo.profileUrl();
-        this.introduce = baseUserEnumVo.introduce();
-        this.followingNum = baseUserEnumVo.followingNum();
-        this.followerNum = baseUserEnumVo.followerNum();
-        this.latestPostId = baseUserEnumVo.latestPostId();
+    public void updateUser(BaseUserUpdateRequestDto baseUserUpdateRequestDto){
+        this.name = updateValue(this.name, baseUserUpdateRequestDto.name());
+        this.email = updateValue(this.email, baseUserUpdateRequestDto.email());
+        this.password = updateValue(this.password, baseUserUpdateRequestDto.password());
+        this.nickname = updateValue(this.nickname, baseUserUpdateRequestDto.nickname());
+        this.profileUrl = updateValue(this.profileUrl, baseUserUpdateRequestDto.profileUrl());
+        this.introduce = updateValue(this.introduce, baseUserUpdateRequestDto.introduce());
+        this.followingNum = updateValue(this.followingNum, baseUserUpdateRequestDto.followingNum());
+        this.followerNum = updateValue(this.followerNum, baseUserUpdateRequestDto.followerNum());
+        this.latestPostId = updateValue(this.latestPostId, baseUserUpdateRequestDto.latestPostId());
+
     }
 
     public void addCategory(Category category){

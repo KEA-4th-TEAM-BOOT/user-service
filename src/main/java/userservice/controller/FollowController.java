@@ -20,12 +20,22 @@ public class FollowController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/follow/{user_id}")
-    public ResponseEntity<List<String>> getFollowerList(@PathVariable Long user_id){
-//        List<String> followerList, followedList = followService.getFollowList(user_id);
-        List<String> followerList = followService.getFollowList(user_id);
+    @GetMapping("/follower/{follower_id}")
+    public ResponseEntity<List<String>> getFollowerList(@PathVariable Long follower_id){
+        List<String> followerList = followService.getFollowerList(follower_id);
         return ResponseEntity.ok(followerList);
     }
 
+    @GetMapping("/followed/{followed_id}")
+    public ResponseEntity<List<String>> getFollowedList(@PathVariable Long followed_id){
+        List<String> followedList = followService.getFollowedList(followed_id);
+        return ResponseEntity.ok(followedList);
+    }
+
+    @DeleteMapping("/follow/{follower_id}")
+    public ResponseEntity<Void> deleteFollow(@PathVariable Long follower_id, @RequestBody Long followed_id){
+        followService.deleteFollow(follower_id, followed_id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
 }

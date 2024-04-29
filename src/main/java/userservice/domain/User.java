@@ -56,6 +56,7 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Category> categoryList = new ArrayList<>();
 
+
     @OneToMany(mappedBy = "followerUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Follow> followerList = new ArrayList<>();
 

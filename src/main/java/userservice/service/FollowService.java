@@ -25,14 +25,25 @@ public class FollowService {
         Follow.createFollow(followerUser, followedUser);
     }
 
-    public List<String> getFollowList(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow();
+    public List<String> getFollowerList(Long follower_id) {
+        User user = userRepository.findById(follower_id).orElseThrow();
         List <String> followerList = user.getFollowerList().stream()
                 .map(follower -> follower.getFollowedUser().getName())
                 .toList();
-
-//        return followerList, folloredList;
         return followerList;
+    }
+
+    public List<String> getFollowedList(Long followed_id) {
+        User user = userRepository.findById(followed_id).orElseThrow();
+        List <String> followedList = user.getFollowedList().stream()
+                .map(followed -> followed.getFollowerUser().getName())
+                .toList();
+        return followedList;
+    }
+
+
+    public void deleteFollow(Long followerId, Long followedId) {
+        followRepository.deleteFollowByFollowerUserIdAndFollowedUserId(followerId, followedId);
     }
 }
 

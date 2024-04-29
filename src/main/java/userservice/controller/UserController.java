@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import userservice.domain.User;
 import userservice.dto.request.BaseUserRequestDto;
+import userservice.dto.request.BaseUserUpdateRequestDto;
 import userservice.dto.response.BaseUserResponseDto;
 import userservice.service.UserService;
 import userservice.vo.BaseUserEnumVo;
@@ -38,8 +39,8 @@ public class UserController {
     }
 
     @PatchMapping("/users/{id}")
-    public ResponseEntity<Void> updateUser(@PathVariable Long id, @RequestBody BaseUserEnumVo baseUserEnumVo){
-        userService.updateUser(id, baseUserEnumVo);
+    public ResponseEntity<Void> updateUser(@PathVariable Long id, @RequestBody BaseUserUpdateRequestDto baseUserUpdateRequestDto){
+        userService.updateUser(id, baseUserUpdateRequestDto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

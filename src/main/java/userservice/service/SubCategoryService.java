@@ -7,6 +7,7 @@ import userservice.domain.Category;
 import userservice.domain.SubCategory;
 import userservice.repository.CategoryRepository;
 import userservice.repository.SubCategoryRepository;
+import userservice.vo.BaseCategoryEnumVo;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ public class SubCategoryService {
 
     private final CategoryRepository categoryRepository;
     private final SubCategoryRepository subCategoryRepository;
+
     public void createSubCategory(Long categoryId, String subCategoryName) {
         Category category = categoryRepository.findById(categoryId).orElseThrow();
         SubCategory subCategory = SubCategory.createSubCategory(category, subCategoryName);
@@ -34,7 +36,24 @@ public class SubCategoryService {
     }
 
     public void deleteSubCategory(Long subCategoryId) {
+        // 서브카테고리를 찾아서 연관된 카테고리 ID를 얻습니다.
+        SubCategory subCategory = subCategoryRepository.findById(subCategoryId)
+                .orElseThrow(() -> new RuntimeException("SubCategory not found"));
+
+        Long categoryId = subCategory.getCategory().getId();
+
+        // 서브 카테고리 삭제 전 해당 카테고리에 속한 서브카테고리 수를 확인
+        long count = subCategoryRepository.countByCategoryId(categoryId);
+
+        // 서브카테고리 삭제
         subCategoryRepository.deleteById(subCategoryId);
+
+        // 삭제 후 서브카테고리 수가 0이면 카테고리를 업데이트
+        if (count == 1) {
+            Category category = categoryRepository.findById(categoryId).orElseThrow();
+            category.updateCategory(new BaseCategoryEnumVo(category.getCategoryName(), false));
+            categoryRepository.save(category); // 변경사항을 저장
+        }
     }
 
     public void updateSubCategory(Long subCategoryId, String subCategoryName) {

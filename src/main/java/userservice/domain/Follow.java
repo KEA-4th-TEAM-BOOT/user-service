@@ -34,7 +34,6 @@ public class Follow extends BaseTimeEntity {
 
         followerUser.addFollowerUser(follow);
         followedUser.addFollowedUser(follow);
-
         return follow;
     }
 }

@@ -4,6 +4,7 @@ package userservice.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import userservice.global.BaseTimeEntity;
+import userservice.vo.BaseCategoryEnumVo;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -29,7 +30,7 @@ public class SubCategory extends BaseTimeEntity {
                 .category(category)
                 .subCategoryName(subCategoryName)
                 .build();
-
+        category.updateCategory(new BaseCategoryEnumVo(category.getCategoryName(), true));
         category.addSubCategory(subCategory);
         return subCategory;
     }

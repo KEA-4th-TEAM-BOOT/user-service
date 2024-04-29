@@ -6,4 +6,5 @@ import userservice.domain.SubCategory;
 
 @Repository
 public interface SubCategoryRepository extends JpaRepository<SubCategory, Long> {
+    long countByCategoryId(Long categoryId);
 }

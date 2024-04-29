@@ -96,6 +96,3 @@ public class User extends BaseTimeEntity {
     }
 
 }
-
-// // follow schema
-// id / user_id /

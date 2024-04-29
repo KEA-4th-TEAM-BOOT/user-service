@@ -20,8 +20,12 @@ public class FollowController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-//    @GetMapping("/follow/{follower_id}")
-//    public ResponseEntity<List<Follow>> getFollowerList(@PathVariable Long follower_id){
-//        List<Follow> followService.getFollowerList(follower_id);
-//    }
+    @GetMapping("/follow/{user_id}")
+    public ResponseEntity<List<String>> getFollowerList(@PathVariable Long user_id){
+//        List<String> followerList, followedList = followService.getFollowList(user_id);
+        List<String> followerList = followService.getFollowList(user_id);
+        return ResponseEntity.ok(followerList);
+    }
+
+
 }

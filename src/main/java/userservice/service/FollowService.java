@@ -8,6 +8,9 @@ import userservice.domain.User;
 import userservice.repository.FollowRepository;
 import userservice.repository.UserRepository;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -19,6 +22,17 @@ public class FollowService {
     public void createFollow(Long followerId, Long followedId) {
         User followerUser = userRepository.findById(followerId).orElseThrow();
         User followedUser = userRepository.findById(followedId).orElseThrow();
-        Follow follow = Follow.createFollow(followerUser, followedUser);
+        Follow.createFollow(followerUser, followedUser);
+    }
+
+    public List<String> getFollowList(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        List <String> followerList = user.getFollowerList().stream()
+                .map(follower -> follower.getFollowedUser().getName())
+                .toList();
+
+//        return followerList, folloredList;
+        return followerList;
     }
 }
+

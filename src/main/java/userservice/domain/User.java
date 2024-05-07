@@ -4,17 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.UpdateTimestamp;
 import userservice.dto.request.BaseUserRequestDto;
 import userservice.dto.request.BaseUserUpdateRequestDto;
-import userservice.dto.response.BaseUserResponseDto;
 import userservice.global.BaseTimeEntity;
-import userservice.global.UserUpdateValue;
-import userservice.vo.BaseUserEnumVo;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +27,7 @@ public class User extends BaseTimeEntity {
     private Long id;
     @Column(length = 100)
     private String name;
-//    @Email    나중에 다시 주석 뺴주기
+    @Email    // 나중에 다시 주석 뺴주기
     @Column(length = 100)
     private String email;
     @Column(length = 100)
@@ -44,7 +38,7 @@ public class User extends BaseTimeEntity {
     private String profileUrl;
     @Column(length = 100)
     private String introduce;
-    @Column(length = 30)
+    @Column(length = 100)
     private String blogUrl;
     @ColumnDefault("0")
     private Integer followingNum;
@@ -56,17 +50,17 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Category> categoryList = new ArrayList<>();
 
-
     @OneToMany(mappedBy = "followerUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Follow> followerList = new ArrayList<>();
 
     @OneToMany(mappedBy = "followedUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Follow> followedList = new ArrayList<>();
-    public static User createUser(BaseUserRequestDto baseUserRequestDto){
+    public static User createUser(BaseUserRequestDto baseUserRequestDto, String encryptedPw){
+
         return User.builder()
                 .name(baseUserRequestDto.name())
                 .email(baseUserRequestDto.email())
-                .password(baseUserRequestDto.password())
+                .password(encryptedPw)
                 .nickname(baseUserRequestDto.nickname())
                 .blogUrl(baseUserRequestDto.blogUrl())
                 .build();

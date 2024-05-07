@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import userservice.domain.User;
 import userservice.dto.request.BaseUserRequestDto;
 import userservice.dto.request.BaseUserUpdateRequestDto;
+import userservice.dto.request.LoginRequestDto;
 import userservice.dto.response.BaseUserResponseDto;
+import userservice.dto.response.TokenResponseDto;
 import userservice.service.UserService;
 import userservice.vo.BaseUserEnumVo;
 
@@ -21,26 +23,31 @@ public class UserController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Void> createUser(@RequestBody BaseUserRequestDto baseUserRequestDto) {
-        userService.createUser(baseUserRequestDto);
+    public ResponseEntity<Void> register(@RequestBody BaseUserRequestDto baseUserRequestDto) {
+        userService.register(baseUserRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<BaseUserResponseDto> getUser(@PathVariable Long id){
         BaseUserResponseDto userResponseDto = userService.getUser(id);
         return ResponseEntity.ok(userResponseDto);
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PatchMapping("/users/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<Void> updateUser(@PathVariable Long id, @RequestBody BaseUserUpdateRequestDto baseUserUpdateRequestDto){
         userService.updateUser(id, baseUserUpdateRequestDto);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PostMapping("/login")
+    public TokenResponseDto login(@RequestBody LoginRequestDto loginRequestDto){
+        return userService.login(loginRequestDto);
     }
 }

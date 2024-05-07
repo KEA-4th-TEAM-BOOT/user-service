@@ -29,6 +29,10 @@ spring:
     show-sql: true # 실행된 SQL 로깅.
 
 
+jwt:
+  secret: 6rCA64KY64uk652866eI67CU7IKs7JWE7J6Q7LCo7Lm07YOA7YyM7ZWY
+
+
 # MongoDB ?? ??(?? ?? ???? ???? ??)
 #  data:
 #    mongodb:

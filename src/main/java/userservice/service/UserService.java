@@ -1,8 +1,9 @@
 package userservice.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.antlr.v4.runtime.Token;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import userservice.config.JwtTokenProvider;
@@ -14,9 +15,7 @@ import userservice.dto.request.BaseUserRequestDto;
 import userservice.dto.response.BaseUserResponseDto;
 import userservice.dto.response.TokenResponseDto;
 import userservice.repository.UserRepository;
-import userservice.vo.BaseUserEnumVo;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,6 +28,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RedisTemplate<String, String> redisTemplate;
 
 
     public void register(BaseUserRequestDto baseUserRequestDto) {
@@ -66,11 +66,23 @@ public class UserService {
 
         String refreshToken = "Bearer " + jwtTokenProvider.createRefreshToken(user.getId());
 
-
-        return TokenResponseDto.builder()
+        TokenResponseDto tokenResponseDto = TokenResponseDto.builder()
                 .code(200)
                 .accessToken("Bearer " + jwtTokenProvider.createAccessToken(user.getId()))
                 .refreshToken(refreshToken)
                 .build();
+
+        redisTemplate.opsForValue().set(String.valueOf(user.getId()), refreshToken);
+
+        return tokenResponseDto;
+    }
+
+    public void logout(HttpServletRequest httpServletRequest){
+        String userId = httpServletRequest.getHeader("user");
+        System.out.println(String.valueOf(userId));
+        redisTemplate.delete(userId);
+    }
+
+    public void logout(String accessToken, String refreshToken) {
     }
 }

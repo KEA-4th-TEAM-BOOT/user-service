@@ -1,5 +1,8 @@
 package userservice.controller;
 
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +18,8 @@ import userservice.vo.BaseUserEnumVo;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/user")
+@Slf4j
 public class UserController {
     private final UserService userService;
 
@@ -22,7 +27,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("")
+    @PostMapping("/")
     public ResponseEntity<Void> register(@RequestBody BaseUserRequestDto baseUserRequestDto) {
         userService.register(baseUserRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -32,6 +37,15 @@ public class UserController {
     public ResponseEntity<BaseUserResponseDto> getUser(@PathVariable Long id){
         BaseUserResponseDto userResponseDto = userService.getUser(id);
         return ResponseEntity.ok(userResponseDto);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest httpServletRequest){
+        String userId = httpServletRequest.getHeader("user");
+        System.out.println("버근가");
+        log.info("버근가2");
+//        userService.logout(accessToken, refreshToken);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/{id}")

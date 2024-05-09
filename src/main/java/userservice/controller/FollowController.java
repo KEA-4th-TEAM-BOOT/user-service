@@ -11,16 +11,17 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/follow")
 public class FollowController {
 
     private final FollowService followService;
-    @PostMapping("/follow/{follower_id}")
+    @PostMapping("/{follower_id}")
     public ResponseEntity<Void> createFollow(@PathVariable Long follower_id, @RequestBody Long followed_id){
         followService.createFollow(follower_id, followed_id);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/follower/{follower_id}")
+    @GetMapping("/{follower_id}")
     public ResponseEntity<List<String>> getFollowerList(@PathVariable Long follower_id){
         List<String> followerList = followService.getFollowerList(follower_id);
         return ResponseEntity.ok(followerList);
@@ -32,7 +33,7 @@ public class FollowController {
         return ResponseEntity.ok(followedList);
     }
 
-    @DeleteMapping("/follow/{follower_id}")
+    @DeleteMapping("/{follower_id}")
     public ResponseEntity<Void> deleteFollow(@PathVariable Long follower_id, @RequestBody Long followed_id){
         followService.deleteFollow(follower_id, followed_id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

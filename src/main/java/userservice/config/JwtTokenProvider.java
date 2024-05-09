@@ -1,6 +1,7 @@
 package userservice.config;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
@@ -31,7 +32,7 @@ public class JwtTokenProvider {
     protected void init(){
         byte[] decodekey = Base64.getDecoder().decode(base64Secret);
         secretKey = new SecretKeySpec(decodekey, SignatureAlgorithm.HS256.getJcaName());
-        logger.info("Secret key initialization");
+        logger.info("[Initialize Secret key]");
     }
 
     public String createAccessToken(Long userId) {
@@ -72,6 +73,19 @@ public class JwtTokenProvider {
             // 예외 처리: 헤더가 없거나 "Bearer " 접두사가 없는 경우
             throw new IllegalArgumentException("Invalid access token header");
         }
+    }
+
+    public boolean validateRefreshToken(String token){
+        logger.info("[validateRefreshToken] 토큰 유효 체크 시작");
+        Jws<Claims> claimsJws = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token);
+        if(!claimsJws.getBody().isEmpty()){
+            logger.info("[validateRefreshToken] 토큰 유효 체크 완료");
+            return true;
+        }
+        return false;
     }
 
 }

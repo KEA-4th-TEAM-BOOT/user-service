@@ -65,7 +65,7 @@ public class JwtTokenProvider {
     public String resolveToken(HttpServletRequest request) {
         logger.info("[resolveToken] HTTP 헤더에서 Token 값 추출");
 
-        String tokenHeader = request.getHeader("Authentication");
+        String tokenHeader = request.getHeader("Authorization");
 
         if (tokenHeader != null && tokenHeader.startsWith("Bearer ")) {
             return tokenHeader.substring(7);
@@ -88,4 +88,12 @@ public class JwtTokenProvider {
         return false;
     }
 
+    public String getUserId(String accessToken){
+        Jws<Claims> claimsJws = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(accessToken);
+        logger.info("[getUserIdFromAccessToken] UserId 추출");
+        return claimsJws.getBody().getSubject();
+    }
 }

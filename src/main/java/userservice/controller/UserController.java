@@ -27,7 +27,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<Void> register(@RequestBody BaseUserRequestDto baseUserRequestDto) {
         userService.register(baseUserRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -37,15 +37,6 @@ public class UserController {
     public ResponseEntity<BaseUserResponseDto> getUser(@PathVariable Long id){
         BaseUserResponseDto userResponseDto = userService.getUser(id);
         return ResponseEntity.ok(userResponseDto);
-    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletRequest httpServletRequest){
-        String userId = httpServletRequest.getHeader("user");
-        System.out.println("버근가");
-        log.info("버근가2");
-//        userService.logout(accessToken, refreshToken);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/{id}")
@@ -61,7 +52,17 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public TokenResponseDto login(@RequestBody LoginRequestDto loginRequestDto){
-        return userService.login(loginRequestDto);
+    public ResponseEntity<TokenResponseDto> login(@RequestBody LoginRequestDto loginRequestDto){
+        return ResponseEntity.ok(userService.login(loginRequestDto));
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest httpServletRequest){
+        userService.logout(httpServletRequest);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PatchMapping("/reissue")
+    public ResponseEntity<TokenResponseDto> reissue(HttpServletRequest httpServletRequest){
+        return ResponseEntity.ok(userService.reissue(httpServletRequest));
     }
 }

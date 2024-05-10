@@ -27,10 +27,10 @@ public class UserController {
         this.userService = userService;
     }
 
+    // 이거 토큰 DTO로 보내지말고 Login DTO나 다른거로 보내야 되는거 확실한데 잘 모르겠다
     @PostMapping("")
-    public ResponseEntity<Void> register(@RequestBody BaseUserRequestDto baseUserRequestDto) {
-        userService.register(baseUserRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<TokenResponseDto> register(@RequestBody BaseUserRequestDto baseUserRequestDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.register(baseUserRequestDto));
     }
 
     @GetMapping("/{id}")

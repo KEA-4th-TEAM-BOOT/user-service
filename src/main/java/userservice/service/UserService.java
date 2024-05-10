@@ -33,10 +33,15 @@ public class UserService {
     private final RedisTemplate<String, String> redisTemplate;
 
 
-    public void register(BaseUserRequestDto baseUserRequestDto) {
+    public TokenResponseDto register(BaseUserRequestDto baseUserRequestDto) {
+
+        if(userRepository.findByEmail(baseUserRequestDto.email()) != null){
+            return new TokenResponseDto(409, "이미 존재하는 이메일입니다", null, null);
+        }
         String encryptedPw = passwordEncoder.encode(baseUserRequestDto.password());
         User user = User.createUser(baseUserRequestDto, encryptedPw);
         userRepository.save(user);
+        return new TokenResponseDto(201, "회원가입 성공", null ,null);
     }
 
     public void deleteUser(Long id){
@@ -61,10 +66,11 @@ public class UserService {
     public TokenResponseDto login(LoginRequestDto loginRequestDto) {
 
         User user = userRepository.findByEmail(loginRequestDto.email());
-        System.out.println(user);
-
         if(user == null)    //
             return new TokenResponseDto(417, "존재하지 않는 이메일입니다.", null, null);
+
+        if(!passwordEncoder.matches(loginRequestDto.password(), user.getPassword()))
+            return new TokenResponseDto(400, "비밀번호가 일치하지 않습니다.", null, null);
 
         String refreshToken = "Bearer " + jwtTokenProvider.createRefreshToken(user.getId());
 
@@ -104,7 +110,7 @@ public class UserService {
 
         if(redisRefreshToken == null){
             return TokenResponseDto.builder()
-                    .code(403)
+                    .code(401)
                     .message("이미 로그아웃한 사용자압니다.")
                     .build();
         }

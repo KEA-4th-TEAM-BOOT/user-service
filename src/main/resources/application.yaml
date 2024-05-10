@@ -35,6 +35,34 @@ spring:
       timeout: 10
       password: 1234
 
+#  mail:
+#    host: smtp.gmail.com
+#    port: 587
+#    username: vodacompanies@gmail.com
+#    password: jenk kcsm pasr mdos
+#    properties:
+#      mail:
+#        smtp:
+#          auth= true
+#          timeout= 5000
+#          starttls.enable=true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: vodacompanies@gmail.com
+    password: jenk kcsm pasr mdos
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            protocols: TLSv1.2
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
 
 jwt:
   secret: 6rCA64KY64uk652866eI67CU7IKs7JWE7J6Q7LCo7Lm07YOA7YyM7ZWY

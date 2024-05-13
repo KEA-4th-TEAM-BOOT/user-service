@@ -1,15 +1,16 @@
 package userservice.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import userservice.config.JwtTokenProvider;
 import userservice.domain.Follow;
 import userservice.domain.User;
 import userservice.repository.FollowRepository;
 import userservice.repository.UserRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional
@@ -18,32 +19,43 @@ public class FollowService {
 
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public void createFollow(Long followerId, Long followedId) {
-        User followerUser = userRepository.findById(followerId).orElseThrow();
-        User followedUser = userRepository.findById(followedId).orElseThrow();
+    public void createFollow(String token, String userLink) {
+        String accessToken = token.substring(7);
+        Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
+
+        User followerUser = userRepository.findById(userId).orElseThrow();
+        User followedUser = userRepository.findByUserLink(userLink);
         Follow.createFollow(followerUser, followedUser);
     }
 
-    public List<String> getFollowerList(Long follower_id) {
-        User user = userRepository.findById(follower_id).orElseThrow();
-        List <String> followerList = user.getFollowerList().stream()
-                .map(follower -> follower.getFollowedUser().getName())
+    public List<String> getFollowingList(HttpServletRequest httpServletRequest) {
+        String accessToken = jwtTokenProvider.resolveToken(httpServletRequest);
+        Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
+        User user = userRepository.findById(userId).orElseThrow();
+        List <String> followingList = user.getFollowingList().stream()
+                .map(follower -> follower.getFollowerUser().getName())
+                .toList();
+        return followingList;
+    }
+
+    public List<String> getFollowedList(HttpServletRequest httpServletRequest) {
+        String accessToken = jwtTokenProvider.resolveToken(httpServletRequest);
+        Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
+        User user = userRepository.findById(userId).orElseThrow();
+        List <String> followerList = user.getFollowingList().stream()
+                .map(followed -> followed.getFollowerUser().getName())
                 .toList();
         return followerList;
     }
 
-    public List<String> getFollowedList(Long followed_id) {
-        User user = userRepository.findById(followed_id).orElseThrow();
-        List <String> followedList = user.getFollowedList().stream()
-                .map(followed -> followed.getFollowerUser().getName())
-                .toList();
-        return followedList;
-    }
-
-
-    public void deleteFollow(Long followerId, Long followedId) {
-        followRepository.deleteFollowByFollowerUserIdAndFollowedUserId(followerId, followedId);
+    public void deleteFollow(String token, String userLink) {
+        String accessToken = token.substring(7);
+        Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
+        User followingUser = userRepository.findById(userId).orElseThrow();
+        User followerUser = userRepository.findByUserLink(userLink);
+        followRepository.deleteFollowByFollowingUserAndFollowerUser(followingUser, followerUser);
     }
 }
 

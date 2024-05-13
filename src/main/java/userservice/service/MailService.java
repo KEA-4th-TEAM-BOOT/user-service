@@ -35,13 +35,13 @@ public class MailService {
 
         String setFrom = "vodacompanies@gmail.com";
         String toMail = email;
-        String title = "회원 가입 인증 이메일 입니다.";
+        String title = "[VODA]이메일 인증 코드";
         String content =
-                "나의 APP을 방문해주셔서 감사합니다." + 	//html 형식으로 작성 !
+                "듣는 블로그 VODA입니다." + 	//html 형식으로 작성 !
                         "<br><br>" +
                         "인증 번호는 " + authNumber + "입니다." +
                         "<br>" +
-                        "인증번호를 제대로 입력해주세요"; //이메일 내용 삽입
+                        "감사합니다."; //이메일 내용 삽입
         mailSend(setFrom, toMail, title, content);
         return Integer.toString(authNumber);
     }

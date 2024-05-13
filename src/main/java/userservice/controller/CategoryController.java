@@ -1,5 +1,6 @@
 package userservice.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,26 +20,26 @@ public class CategoryController {
         this.categoryService = controllerService;
     }
 
-    @PostMapping("/{user_id}")
-    public ResponseEntity<String> createCategory(@PathVariable Long user_id, @RequestBody String categoryName) {
-        categoryService.createCategory(user_id, categoryName);
+    @PostMapping("")
+    public ResponseEntity<String> createCategory(@RequestHeader("Authorization")String token, @RequestBody String categoryName) {
+        categoryService.createCategory(token, categoryName);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/{user_id}")
-    public List<CategoryResponseDto> getCategory(@PathVariable Long user_id) {
-        return categoryService.getCategoryList(user_id);
+    @GetMapping("")
+    public List<CategoryResponseDto> getCategory(HttpServletRequest httpServletRequest) {
+        return categoryService.getCategoryList(httpServletRequest);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        categoryService.deleteCategory(id);
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
+        categoryService.deleteCategory(categoryId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateCategory(@PathVariable Long id, @RequestBody BaseCategoryEnumVo baseCategoryEnumVo) {
-        categoryService.updateCategory(id, baseCategoryEnumVo);
+    @PatchMapping("/{categoryId}")
+    public ResponseEntity<Void> updateCategory(@PathVariable Long categoryId, @RequestBody BaseCategoryEnumVo baseCategoryEnumVo) {
+        categoryService.updateCategory(categoryId, baseCategoryEnumVo);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

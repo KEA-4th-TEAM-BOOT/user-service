@@ -24,7 +24,7 @@ public record BaseUserResponseDto(
                 .email(user.getEmail())
                 .nickname(user.getNickname())
                 .profileUrl(user.getProfileUrl())
-                .blogUrl(user.getBlogUrl())
+                .blogUrl(user.getUserLink())
                 .followingNum(user.getFollowingNum())
                 .followerNum(user.getFollowerNum())
                 .latestPostId(user.getLatestPostId())

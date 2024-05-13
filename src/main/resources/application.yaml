@@ -1,81 +1,58 @@
-# ?? ?? ??
 server:
-  port: 8080 # ?????? ??? ??? ?? ??. ???? 8080???.
+  port: 8080
   servlet:
-    contextPath: /api/v1 # ?? ?? URL ?? ?? ?? ??. ?? ??, `/api/v1/user/hello`? ?? ?????.
+    contextPath: /api/v1  # The base URL path for all API endpoints.
 
-# Spring ??? ?? ? JPA ??
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver # MySQL JDBC ???? ????.
-    url: jdbc:mysql://localhost:3307/user_service?createDatabaseIfNotExist=true # ?????? URL. `createDatabaseIfNotExist=true` ??? ??????? ???? ?? ? ?? ?????.
-    username: admin # ?????? ??? ?? ??? ??.
-    password: 1234 # ?????? ??? ?? ????.
+    driver-class-name: com.mysql.cj.jdbc.Driver  # The MySQL JDBC driver class.
+    url: jdbc:mysql://localhost:3307/user_service?createDatabaseIfNotExist=true  # The JDBC URL to connect to the MySQL database. The query parameter `createDatabaseIfNotExist` ensures the database is created if it doesn't exist.
+    username: admin  # Username for the MySQL database.
+    password: 1234  # Password for the MySQL database.
     hikari:
-      auto-commit: false # HikariCP ??? ?? ?? ?? ??. false? ??, ??????? ????? ????? ????? ???? ???.
-      connection-test-query: SELECT 1 # ??? ?? ??? ????? ???? ?? ???? ??.
-      minimum-idle: 10 # ??? ?? ??? ?? ?? ??? ?.
-      maximum-pool-size: 20 # ??? ??? ??? ?? ??? ?.
+      auto-commit: false  # Disables automatic commit of transactions.
+      connection-test-query: SELECT 1  # SQL query used to validate connections.
+      minimum-idle: 10  # Minimum number of idle connections in the pool.
+      maximum-pool-size: 20  # Maximum number of connections in the pool.
 
   jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect # MySQL 8용 Hibernate 방언.
+    database-platform: org.hibernate.dialect.MySQL8Dialect  # Hibernate dialect for MySQL 8.
     hibernate:
-      ddl-auto: update # Hibernate가 필요한 변경사항만 데이터베이스 스키마에 적용.
+      ddl-auto: update  # Automatically updates the database schema to reflect entity changes.
     properties:
       hibernate:
-        format_sql: true # SQL을 보기 좋게 포맷.
-        hbm2ddl.auto: update # 데이터베이스 스키마를 최신 상태로 유지.
-    open-in-view: false # Open Session In View 패턴 비활성화.
-    show-sql: true # 실행된 SQL 로깅.
+        format_sql: true  # Formats SQL queries in logs for better readability.
+        hbm2ddl.auto: update  # Keeps the database schema up to date based on entity changes.
+    open-in-view: false  # Disables Open Session In View pattern.
+    show-sql: true  # Logs SQL queries executed.
 
   data:
     redis:
-      host: localhost
-      port: 6379
-      timeout: 10
-      password: 1234
+      host: localhost  # Redis server host.
+      port: 6379  # Redis server port.
+      timeout: 10  # Redis connection timeout.
+      password: 1234  # Password for the Redis server.
 
-#  mail:
-#    host: smtp.gmail.com
-#    port: 587
-#    username: vodacompanies@gmail.com
-#    password: jenk kcsm pasr mdos
-#    properties:
-#      mail:
-#        smtp:
-#          auth= true
-#          timeout= 5000
-#          starttls.enable=true
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: vodacompanies@gmail.com
-    password: jenk kcsm pasr mdos
+    host: smtp.gmail.com  # SMTP server for sending emails.
+    port: 587  # Port for the SMTP server.
+    username: nuchan417@gmail.com  # Email address for the SMTP server.
+    password: fteb xneu tlfz tbye  # Password for the SMTP server.
     properties:
       mail:
         smtp:
-          auth: true
+          auth: true  # Enables SMTP authentication.
           starttls:
-            enable: true
+            enable: true  # Enables STARTTLS for secure email transmission.
           ssl:
-            protocols: TLSv1.2
-          connectiontimeout: 5000
-          timeout: 5000
-          writetimeout: 5000
-
+            protocols: TLSv1.2  # Specifies SSL protocols.
+          connectiontimeout: 5000  # SMTP connection timeout in milliseconds.
+          timeout: 5000  # SMTP timeout in milliseconds.
+          writetimeout: 5000  # SMTP write timeout in milliseconds.
 
 jwt:
-  secret: 6rCA64KY64uk652866eI67CU7IKs7JWE7J6Q7LCo7Lm07YOA7YyM7ZWY
+  secret: 6rCA64KY64uk652866eI67CU7IKs7JWE7J6Q7LCo7Lm07YOA7YyM7ZWY  # Secret key for JWT (JSON Web Token) authentication.
 
-
-# MongoDB ?? ??(?? ?? ???? ???? ??)
-#  data:
-#    mongodb:
-#      uri: mongodb://admin:1234@localhost:27017/admin # MongoDB ?? URI. ??? ??, ????, ???, ??, ?????? ??? ?????.
-
-
-# ?? ??
 logging:
   level:
-    org.hibernate.SQL: debug # Hibernate? ???? SQL ??? ??? ??? ?????.
-    org.springframework.data.mongodb: DEBUG # Spring Data MongoDB ?? ??? DEBUG ??? ?????.
+    org.hibernate.SQL: debug  # Enables debug-level logging for Hibernate SQL queries.

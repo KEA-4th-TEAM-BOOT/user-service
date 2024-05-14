@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import userservice.config.JwtTokenProvider;
@@ -26,7 +27,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public void deleteUser(HttpServletRequest request){
+    public void deleteUser(HttpServletRequest request) {
         String accessToken = jwtTokenProvider.resolveToken(request);
         Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
         userRepository.deleteById(userId);
@@ -57,5 +58,26 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow();
         String encryptedPw = new BCryptPasswordEncoder().encode(rawPassword);
         user.changePassword(encryptedPw);
+    }
+
+    // Internal API
+    public Long getUserByUserLink(String userLink) {
+        return userRepository.findByUserLink(userLink).getId();
+    }
+
+    public Boolean checkEmail(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            return true;
+        } else
+            return false;
+    }
+
+    public Boolean checkUserLink(String userLink) {
+        User user = userRepository.findByUserLink(userLink);
+        if (user == null) {
+            return true;
+        } else
+            return false;
     }
 }

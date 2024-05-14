@@ -17,11 +17,12 @@ import userservice.service.AuthService;
 public class AuthController {
 
     private final AuthService authService;
-    @PostMapping("")
+    @PostMapping("register")
     public ResponseEntity<TokenResponseDto> register(@RequestBody BaseUserRequestDto baseUserRequestDto) {
         authService.register(baseUserRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponseDto> login(@RequestBody LoginRequestDto loginRequestDto){

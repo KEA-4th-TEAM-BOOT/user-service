@@ -64,7 +64,7 @@ public class User extends BaseTimeEntity {
                 .email(baseUserRequestDto.email())
                 .password(new BCryptPasswordEncoder().encode(baseUserRequestDto.password()))
                 .nickname(baseUserRequestDto.nickname())
-                .userLink(baseUserRequestDto.blogUrl())
+                .userLink(baseUserRequestDto.userLink())
                 .build();
     }
 

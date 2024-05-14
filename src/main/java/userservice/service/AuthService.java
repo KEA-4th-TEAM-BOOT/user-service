@@ -27,9 +27,6 @@ public class AuthService {
 
     public TokenResponseDto register(BaseUserRequestDto baseUserRequestDto) {
 
-        if(userRepository.findByEmail(baseUserRequestDto.email()) != null){
-            return new TokenResponseDto(409, "이미 존재하는 이메일입니다", null, null);
-        }
 //        String encryptedPw = passwordEncoder.encode(baseUserRequestDto.password());
         User user = User.createUser(baseUserRequestDto);
         userRepository.save(user);

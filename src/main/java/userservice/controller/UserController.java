@@ -40,23 +40,7 @@ public class UserController {
         return userService.getUserByUserLink(userLink);
     }
 
-    @GetMapping("/check/{email}")
-    public ResponseEntity<Void> emailCheck(@PathVariable String email){
-        Boolean isEmailDuplicate = userService.checkEmail(email);
-        if(isEmailDuplicate){
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    }
 
-    @GetMapping("/check/{userLink}")
-    public ResponseEntity<Void> userLinkCheck(@PathVariable String userLink){
-        Boolean isUserLinkDuplicate = userService.checkUserLink(userLink);
-        if(isUserLinkDuplicate){
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    }
 
     @DeleteMapping("")
     public ResponseEntity<Void> deleteUser(HttpServletRequest request){

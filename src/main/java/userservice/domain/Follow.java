@@ -20,21 +20,21 @@ public class Follow extends BaseTimeEntity {
 
     //
     @ManyToOne
+    @JoinColumn(name = "following_id", referencedColumnName = "id")
+    private User followingUser;
+
+    @ManyToOne
     @JoinColumn(name = "follower_id", referencedColumnName = "id")
     private User followerUser;
 
-    @ManyToOne
-    @JoinColumn(name = "followed_id", referencedColumnName = "id")
-    private User followedUser;
-
-    public static Follow createFollow(User followerUser, User followedUser){
+    public static Follow createFollow(User followingUser, User followerUser){
         Follow follow = Follow.builder()
+                .followingUser(followingUser)
                 .followerUser(followerUser)
-                .followedUser(followedUser)
                 .build();
 
+        followingUser.addFollowingUser(follow);
         followerUser.addFollowerUser(follow);
-        followedUser.addFollowedUser(follow);
         return follow;
     }
 }

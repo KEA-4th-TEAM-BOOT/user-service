@@ -4,17 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import userservice.config.UserSecurityConfig;
 import userservice.dto.request.BaseUserRequestDto;
 import userservice.dto.request.BaseUserUpdateRequestDto;
-import userservice.dto.response.BaseUserResponseDto;
 import userservice.global.BaseTimeEntity;
-import userservice.global.UserUpdateValue;
-import userservice.vo.BaseUserEnumVo;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +29,7 @@ public class User extends BaseTimeEntity {
     private Long id;
     @Column(length = 100)
     private String name;
-//    @Email    나중에 다시 주석 뺴주기
+    @Email    // 나중에 다시 주석 뺴주기
     @Column(length = 100)
     private String email;
     @Column(length = 100)
@@ -45,7 +41,7 @@ public class User extends BaseTimeEntity {
     @Column(length = 100)
     private String introduce;
     @Column(length = 30)
-    private String blogUrl;
+    private String userLink;
     @ColumnDefault("0")
     private Integer followingNum;
     @ColumnDefault("0")
@@ -56,44 +52,44 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Category> categoryList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "followingUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Follow> followingList = new ArrayList<>();
 
     @OneToMany(mappedBy = "followerUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Follow> followerList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "followedUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Follow> followedList = new ArrayList<>();
     public static User createUser(BaseUserRequestDto baseUserRequestDto){
+
         return User.builder()
                 .name(baseUserRequestDto.name())
                 .email(baseUserRequestDto.email())
-                .password(baseUserRequestDto.password())
+                .password(new BCryptPasswordEncoder().encode(baseUserRequestDto.password()))
                 .nickname(baseUserRequestDto.nickname())
-                .blogUrl(baseUserRequestDto.blogUrl())
+                .userLink(baseUserRequestDto.userLink())
                 .build();
     }
 
     public void updateUser(BaseUserUpdateRequestDto baseUserUpdateRequestDto){
-        this.name = updateValue(this.name, baseUserUpdateRequestDto.name());
-        this.email = updateValue(this.email, baseUserUpdateRequestDto.email());
-        this.password = updateValue(this.password, baseUserUpdateRequestDto.password());
         this.nickname = updateValue(this.nickname, baseUserUpdateRequestDto.nickname());
         this.profileUrl = updateValue(this.profileUrl, baseUserUpdateRequestDto.profileUrl());
         this.introduce = updateValue(this.introduce, baseUserUpdateRequestDto.introduce());
         this.followingNum = updateValue(this.followingNum, baseUserUpdateRequestDto.followingNum());
         this.followerNum = updateValue(this.followerNum, baseUserUpdateRequestDto.followerNum());
         this.latestPostId = updateValue(this.latestPostId, baseUserUpdateRequestDto.latestPostId());
+    }
 
+    public void changePassword(String encryptedPw){
+        this.password = updateValue(this.password, encryptedPw);
     }
 
     public void addCategory(Category category){
         this.categoryList.add(category);
     }
 
+    public void addFollowingUser(Follow follow){
+        this.followingList.add(follow);
+    }
     public void addFollowerUser(Follow follow){
         this.followerList.add(follow);
-    }
-    public void addFollowedUser(Follow follow){
-        this.followedList.add(follow);
     }
 
 }

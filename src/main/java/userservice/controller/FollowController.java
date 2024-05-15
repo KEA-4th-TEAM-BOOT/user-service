@@ -1,5 +1,6 @@
 package userservice.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,30 +12,33 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/follow")
 public class FollowController {
 
     private final FollowService followService;
-    @PostMapping("/follow/{follower_id}")
-    public ResponseEntity<Void> createFollow(@PathVariable Long follower_id, @RequestBody Long followed_id){
-        followService.createFollow(follower_id, followed_id);
+
+    @PostMapping("/{userLink}")
+    public ResponseEntity<Void> createFollow(@RequestHeader("Authorization")String token, @PathVariable String userLink){
+        followService.createFollow(token, userLink);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/follower/{follower_id}")
-    public ResponseEntity<List<String>> getFollowerList(@PathVariable Long follower_id){
-        List<String> followerList = followService.getFollowerList(follower_id);
+    @GetMapping("/following")
+    public ResponseEntity<List<String>> getFollowingList(HttpServletRequest httpServletRequest){
+        List<String> followerList = followService.getFollowingList(httpServletRequest);
         return ResponseEntity.ok(followerList);
     }
 
-    @GetMapping("/followed/{followed_id}")
-    public ResponseEntity<List<String>> getFollowedList(@PathVariable Long followed_id){
-        List<String> followedList = followService.getFollowedList(followed_id);
+    @GetMapping("/follower")
+    public ResponseEntity<List<String>> getFollowerList(HttpServletRequest httpServletRequest){
+        List<String> followedList = followService.getFollowedList(httpServletRequest);
         return ResponseEntity.ok(followedList);
     }
 
-    @DeleteMapping("/follow/{follower_id}")
-    public ResponseEntity<Void> deleteFollow(@PathVariable Long follower_id, @RequestBody Long followed_id){
-        followService.deleteFollow(follower_id, followed_id);
+    @DeleteMapping("/{userLink}")
+    public ResponseEntity<Void> deleteFollow(@RequestHeader("Authroization")String token, @PathVariable String userLink){
+
+        followService.deleteFollow(token, userLink);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

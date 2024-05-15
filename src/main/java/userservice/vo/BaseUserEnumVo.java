@@ -15,7 +15,7 @@ public record BaseUserEnumVo(
         String nickname,
         String profileUrl,
         String introduce,
-        String blogUrl,
+        String userLink,
         Integer followingNum,
         Integer followerNum,
         Integer latestPostId,
@@ -30,7 +30,7 @@ public record BaseUserEnumVo(
                 .nickname(baseUserRequestDto.nickname())
                 .profileUrl(Optional.ofNullable(baseUserEnumVo.profileUrl).orElse(""))
                 .introduce(Optional.ofNullable(baseUserEnumVo.introduce).orElse(""))
-                .blogUrl(baseUserRequestDto.blogUrl())
+                .userLink(baseUserRequestDto.userLink())
                 .followingNum(baseUserEnumVo.followingNum)
                 .followerNum(baseUserEnumVo.followerNum)
                 .latestPostId(baseUserEnumVo.latestPostId)

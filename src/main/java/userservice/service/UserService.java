@@ -60,11 +60,6 @@ public class UserService {
         user.changePassword(encryptedPw);
     }
 
-    // Internal API
-    public Long getUserByUserLink(String userLink) {
-        return userRepository.findByUserLink(userLink).getId();
-    }
-
     public Boolean checkEmail(String email) {
         User user = userRepository.findByEmail(email);
         if (user == null) {
@@ -80,4 +75,10 @@ public class UserService {
         } else
             return false;
     }
+
+    // Internal API
+    public Long getUserByUserLink(String userLink) {
+        return userRepository.findByUserLink(userLink).getId();
+    }
+
 }

@@ -33,7 +33,7 @@ public class RedisConfig {
     private Long timeout;
 
     @Bean
-    public RestTemplate restTemplate(){
+    public RestTemplate restTemplate() {
         return new RestTemplate();
     }
 

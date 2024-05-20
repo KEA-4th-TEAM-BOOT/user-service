@@ -62,18 +62,12 @@ public class UserService {
 
     public Boolean checkEmail(String email) {
         User user = userRepository.findByEmail(email);
-        if (user == null) {
-            return true;
-        } else
-            return false;
+        return user == null;
     }
 
     public Boolean checkUserLink(String userLink) {
         User user = userRepository.findByUserLink(userLink);
-        if (user == null) {
-            return true;
-        } else
-            return false;
+        return user == null;
     }
 
     // Internal API

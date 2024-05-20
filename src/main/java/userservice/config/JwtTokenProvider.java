@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -17,7 +18,7 @@ import java.security.Signature;
 import java.util.Base64;
 import java.util.Date;
 
-@Component
+@Configuration
 public class JwtTokenProvider {
 
     private final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
@@ -29,7 +30,7 @@ public class JwtTokenProvider {
     private final long refreshTokenTime = 30L * 24L * 60 * 60 * 1000; // 1달 토큰 유효
 
     @PostConstruct
-    protected void init(){
+    protected void init() {
         byte[] decodekey = Base64.getDecoder().decode(base64Secret);
         secretKey = new SecretKeySpec(decodekey, SignatureAlgorithm.HS256.getJcaName());
         logger.info("[Initialize Secret key]");
@@ -75,20 +76,20 @@ public class JwtTokenProvider {
         }
     }
 
-    public boolean validateRefreshToken(String token){
+    public boolean validateRefreshToken(String token) {
         logger.info("[validateRefreshToken] 토큰 유효 체크 시작");
         Jws<Claims> claimsJws = Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token);
-        if(!claimsJws.getBody().isEmpty()){
+        if (!claimsJws.getBody().isEmpty()) {
             logger.info("[validateRefreshToken] 토큰 유효 체크 완료");
             return true;
         }
         return false;
     }
 
-    public String getUserId(String accessToken){
+    public String getUserId(String accessToken) {
         Jws<Claims> claimsJws = Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()

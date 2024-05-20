@@ -18,7 +18,7 @@ public class Follow extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    //
+
     @ManyToOne
     @JoinColumn(name = "following_id", referencedColumnName = "id")
     private User followingUser;
@@ -27,7 +27,7 @@ public class Follow extends BaseTimeEntity {
     @JoinColumn(name = "follower_id", referencedColumnName = "id")
     private User followerUser;
 
-    public static Follow createFollow(User followingUser, User followerUser){
+    public static void createFollow(User followingUser, User followerUser) {
         Follow follow = Follow.builder()
                 .followingUser(followingUser)
                 .followerUser(followerUser)
@@ -35,6 +35,5 @@ public class Follow extends BaseTimeEntity {
 
         followingUser.addFollowingUser(follow);
         followerUser.addFollowerUser(follow);
-        return follow;
     }
 }

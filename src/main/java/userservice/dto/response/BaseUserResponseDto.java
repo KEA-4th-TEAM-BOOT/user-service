@@ -18,7 +18,7 @@ public record BaseUserResponseDto(
         Integer latestPostId,
         List<CategoryResponseDto> categoryList
 ) {
-    public static BaseUserResponseDto of(User user, List<CategoryResponseDto> categoryList){
+    public static BaseUserResponseDto of(User user, List<CategoryResponseDto> categoryList) {
         return BaseUserResponseDto.builder()
                 .name(user.getName())
                 .email(user.getEmail())

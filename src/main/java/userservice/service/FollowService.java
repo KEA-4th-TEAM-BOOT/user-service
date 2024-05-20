@@ -34,20 +34,18 @@ public class FollowService {
         String accessToken = jwtTokenProvider.resolveToken(httpServletRequest);
         Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
         User user = userRepository.findById(userId).orElseThrow();
-        List <String> followingList = user.getFollowingList().stream()
+        return user.getFollowingList().stream()
                 .map(follower -> follower.getFollowerUser().getName())
                 .toList();
-        return followingList;
     }
 
     public List<String> getFollowedList(HttpServletRequest httpServletRequest) {
         String accessToken = jwtTokenProvider.resolveToken(httpServletRequest);
         Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
         User user = userRepository.findById(userId).orElseThrow();
-        List <String> followerList = user.getFollowingList().stream()
+        return user.getFollowingList().stream()
                 .map(followed -> followed.getFollowerUser().getName())
                 .toList();
-        return followerList;
     }
 
     public void deleteFollow(String token, String userLink) {

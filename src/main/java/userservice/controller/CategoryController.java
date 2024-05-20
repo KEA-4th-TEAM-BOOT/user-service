@@ -21,7 +21,7 @@ public class CategoryController {
     }
 
     @PostMapping("")
-    public ResponseEntity<String> createCategory(@RequestHeader("Authorization")String token, @RequestBody String categoryName) {
+    public ResponseEntity<Void> createCategory(@RequestHeader("Authorization") String token, @RequestBody String categoryName) {
         categoryService.createCategory(token, categoryName);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

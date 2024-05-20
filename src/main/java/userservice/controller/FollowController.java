@@ -18,26 +18,25 @@ public class FollowController {
     private final FollowService followService;
 
     @PostMapping("/{userLink}")
-    public ResponseEntity<Void> createFollow(@RequestHeader("Authorization")String token, @PathVariable String userLink){
+    public ResponseEntity<Void> createFollow(@RequestHeader("Authorization") String token, @PathVariable String userLink) {
         followService.createFollow(token, userLink);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/following")
-    public ResponseEntity<List<String>> getFollowingList(HttpServletRequest httpServletRequest){
+    public ResponseEntity<List<String>> getFollowingList(HttpServletRequest httpServletRequest) {
         List<String> followerList = followService.getFollowingList(httpServletRequest);
         return ResponseEntity.ok(followerList);
     }
 
     @GetMapping("/follower")
-    public ResponseEntity<List<String>> getFollowerList(HttpServletRequest httpServletRequest){
+    public ResponseEntity<List<String>> getFollowerList(HttpServletRequest httpServletRequest) {
         List<String> followedList = followService.getFollowedList(httpServletRequest);
         return ResponseEntity.ok(followedList);
     }
 
     @DeleteMapping("/{userLink}")
-    public ResponseEntity<Void> deleteFollow(@RequestHeader("Authroization")String token, @PathVariable String userLink){
-
+    public ResponseEntity<Void> deleteFollow(@RequestHeader("Authroization") String token, @PathVariable String userLink) {
         followService.deleteFollow(token, userLink);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

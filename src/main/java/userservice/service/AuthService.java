@@ -25,22 +25,21 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
 
-    public TokenResponseDto register(BaseUserRequestDto baseUserRequestDto) {
+    public void register(BaseUserRequestDto baseUserRequestDto) {
 
 //        String encryptedPw = passwordEncoder.encode(baseUserRequestDto.password());
         User user = User.createUser(baseUserRequestDto);
         userRepository.save(user);
-        return new TokenResponseDto(201, "회원가입 성공", null ,null);
     }
 
 
     public TokenResponseDto login(LoginRequestDto loginRequestDto) {
 
         User user = userRepository.findByEmail(loginRequestDto.email());
-        if(user == null)    //
+        if (user == null)    //
             return new TokenResponseDto(417, "존재하지 않는 이메일입니다.", null, null);
 
-        if(!passwordEncoder.matches(loginRequestDto.password(), user.getPassword()))
+        if (!passwordEncoder.matches(loginRequestDto.password(), user.getPassword()))
             return new TokenResponseDto(400, "비밀번호가 일치하지 않습니다.", null, null);
 
         String refreshToken = "Bearer " + jwtTokenProvider.createRefreshToken(user.getId());
@@ -56,7 +55,7 @@ public class AuthService {
         return tokenResponseDto;
     }
 
-    public void logout(HttpServletRequest httpServletRequest){
+    public void logout(HttpServletRequest httpServletRequest) {
         String accessToken = jwtTokenProvider.resolveToken(httpServletRequest);
 //        jwtTokenProvider.validateRefreshToken(accessToken);
         String userId = jwtTokenProvider.getUserId(accessToken);
@@ -70,7 +69,7 @@ public class AuthService {
         String refreshToken = httpServletRequest.getHeader("RefreshToken");
         String userId = jwtTokenProvider.getUserId(accessToken);
 
-        if(!jwtTokenProvider.validateRefreshToken(refreshToken.substring(7))){
+        if (!jwtTokenProvider.validateRefreshToken(refreshToken.substring(7))) {
             return TokenResponseDto.builder()
                     .code(417)
                     .message("다시 로그인 해주세요.")
@@ -79,14 +78,14 @@ public class AuthService {
 
         String redisRefreshToken = redisTemplate.opsForValue().get(userId);
 
-        if(redisRefreshToken == null){
+        if (redisRefreshToken == null) {
             return TokenResponseDto.builder()
                     .code(401)
                     .message("이미 로그아웃한 사용자압니다.")
                     .build();
         }
 
-        if(redisRefreshToken.equals(refreshToken)){
+        if (redisRefreshToken.equals(refreshToken)) {
             return TokenResponseDto.builder()
                     .code(200)
                     .message("토큰 재발급 완료")

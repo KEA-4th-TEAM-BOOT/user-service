@@ -25,59 +25,61 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("register")
-    public ResponseEntity<TokenResponseDto> register(@RequestBody BaseUserRequestDto baseUserRequestDto) {
+    public ResponseEntity<Void> register(@RequestBody BaseUserRequestDto baseUserRequestDto) {
         authService.register(baseUserRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-
     @PostMapping("/login")
-    public ResponseEntity<TokenResponseDto> login(@RequestBody LoginRequestDto loginRequestDto){
+    public ResponseEntity<TokenResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
         return ResponseEntity.ok(authService.login(loginRequestDto));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletRequest httpServletRequest){
+    public ResponseEntity<Void> logout(HttpServletRequest httpServletRequest) {
         authService.logout(httpServletRequest);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PatchMapping("/reissue")
-    public ResponseEntity<TokenResponseDto> reissue(HttpServletRequest httpServletRequest){
+    public ResponseEntity<TokenResponseDto> reissue(HttpServletRequest httpServletRequest) {
         return ResponseEntity.ok(authService.reissue(httpServletRequest));
     }
 
     @PostMapping("send-email")
-    public String sendEmail(@RequestBody EmailAuthRequestDto emailAuthRequestDto){
+    public ResponseEntity<Void> sendEmail(@RequestBody EmailAuthRequestDto emailAuthRequestDto) {
         log.info("[Email] 인증할 이메일 주소: " + emailAuthRequestDto.email());
-        return mailService.sendEmail(emailAuthRequestDto.email());
+        mailService.sendEmail(emailAuthRequestDto.email());
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/verification")
-    public String AuthNumCheck(@RequestBody EmailAuthRequestDto EmailAuthRequestDto){
+    public ResponseEntity<Void> AuthNumCheck(@RequestBody EmailAuthRequestDto EmailAuthRequestDto) {
         log.info("[Email] 인증번호 검증");
         Boolean authCheck = mailService.checkAuth(EmailAuthRequestDto);
-        if(authCheck)
-            return "ok";
+        if (authCheck)
+            return ResponseEntity.ok().build();
         else
-            return "유효하지 않은 인증번호입니다.";
+            return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/check/{email}")
-    public ResponseEntity<Void> emailCheck(@PathVariable String email){
+    @GetMapping("/check-email/{email}")
+    public ResponseEntity<Void> emailCheck(@PathVariable String email) {
         Boolean isEmailDuplicate = userService.checkEmail(email);
-        if(isEmailDuplicate){
+        if (isEmailDuplicate) {
             return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @GetMapping("/check/{userLink}")
-    public ResponseEntity<Void> userLinkCheck(@PathVariable String userLink){
+    @GetMapping("/check-userLink/{userLink}")
+    public ResponseEntity<String> userLinkCheck(@PathVariable String userLink) {
         Boolean isUserLinkDuplicate = userService.checkUserLink(userLink);
-        if(isUserLinkDuplicate){
+        if (isUserLinkDuplicate) {
             return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }

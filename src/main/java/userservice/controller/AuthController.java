@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import userservice.dto.request.BaseUserRequestDto;
 import userservice.dto.request.EmailAuthRequestDto;
 import userservice.dto.request.LoginRequestDto;
+import userservice.dto.response.LoginResponseDto;
 import userservice.dto.response.TokenResponseDto;
 import userservice.service.AuthService;
 import userservice.service.MailService;
@@ -31,8 +32,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
-        return ResponseEntity.ok(authService.login(loginRequestDto));
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
+        LoginResponseDto loginResponseDto = authService.login(loginRequestDto);
+        if(loginResponseDto.userLink() == null){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(loginResponseDto);
     }
 
     @PostMapping("/logout")
@@ -60,7 +65,7 @@ public class AuthController {
         if (authCheck)
             return ResponseEntity.ok().build();
         else
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.noContent().build(); // bad request 보내기
     }
 
     @GetMapping("/check-email/{email}")

@@ -8,6 +8,7 @@ public record BaseUserRequestDto(
         @NotNull String email,
         @NotNull String password,
         @NotNull String nickname,
+        @NotNull String profileUrl,
         @NotNull String userLink
 ) {
 }

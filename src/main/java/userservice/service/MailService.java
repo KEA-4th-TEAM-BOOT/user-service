@@ -58,13 +58,17 @@ public class MailService {
     }
 
     public Boolean checkAuth(EmailAuthRequestDto emailAuthRequestDto) {
-//        String authNumber = new String(emailAuthRequestDto.authNumber().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
         log.info(emailAuthRequestDto.authNumber());
-        if (redisTemplate.opsForValue().get(emailAuthRequestDto.authNumber()) == null)
+        String storedEmail = redisTemplate.opsForValue().get(emailAuthRequestDto.authNumber());
+
+        if (storedEmail == null) {
             return false;
-        else if (redisTemplate.opsForValue().get(emailAuthRequestDto.authNumber()).equals(emailAuthRequestDto.email())) {
+        } else if (storedEmail.equals(emailAuthRequestDto.email())) {
+            // 값이 맞으면 Redis에서 값을 삭제
+            redisTemplate.delete(emailAuthRequestDto.authNumber());
             return true;
-        } else
+        } else {
             return false;
+        }
     }
 }

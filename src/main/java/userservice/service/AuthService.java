@@ -11,6 +11,7 @@ import userservice.config.JwtTokenProvider;
 import userservice.domain.User;
 import userservice.dto.request.BaseUserRequestDto;
 import userservice.dto.request.LoginRequestDto;
+import userservice.dto.response.LoginResponseDto;
 import userservice.dto.response.TokenResponseDto;
 import userservice.repository.UserRepository;
 
@@ -33,26 +34,33 @@ public class AuthService {
     }
 
 
-    public TokenResponseDto login(LoginRequestDto loginRequestDto) {
+    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
 
         User user = userRepository.findByEmail(loginRequestDto.email());
-        if (user == null)    //
-            return new TokenResponseDto(417, "존재하지 않는 이메일입니다.", null, null);
+        if (user == null)
+            return LoginResponseDto.builder()
+                    .tokenResponseDto(new TokenResponseDto(417, "존재하지 않는 이메일입니다.", null, null))
+                    .build();
 
         if (!passwordEncoder.matches(loginRequestDto.password(), user.getPassword()))
-            return new TokenResponseDto(400, "비밀번호가 일치하지 않습니다.", null, null);
+            return LoginResponseDto.builder()
+                    .tokenResponseDto(new TokenResponseDto(400, "비밀번호가 일치하지 않습니다.", null, null))
+                    .build();
 
         String refreshToken = "Bearer " + jwtTokenProvider.createRefreshToken(user.getId());
 
-        TokenResponseDto tokenResponseDto = TokenResponseDto.builder()
-                .code(200)
-                .message("로그인 성공")
-                .accessToken("Bearer " + jwtTokenProvider.createAccessToken(user.getId()))
-                .refreshToken(refreshToken)
-                .build();
+        LoginResponseDto loginResponseDto = LoginResponseDto.builder()
+                .tokenResponseDto(TokenResponseDto.builder()
+                        .code(200)
+                        .message("로그인 성공")
+                        .accessToken("Bearer " + jwtTokenProvider.createAccessToken(user.getId()))
+                        .refreshToken(refreshToken)
+                        .build()
+                )
+                        .userLink(user.getUserLink()).build();
 
         redisTemplate.opsForValue().set(String.valueOf(user.getId()), refreshToken);
-        return tokenResponseDto;
+        return loginResponseDto;
     }
 
     public void logout(HttpServletRequest httpServletRequest) {

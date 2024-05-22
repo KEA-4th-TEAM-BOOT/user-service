@@ -1,0 +1,83 @@
+server:
+  port: 8080
+  servlet:
+    contextPath: /api/v1/user
+
+## Database 접속 정보 위치 (Secret으로 주입)
+#mysql:
+#  filepath: "/usr/src/myapp/datasource/postgresql-info.yaml"
+#
+## Database 접속 정보
+#datasource:
+#  driver-class-name:
+#  url:
+#  username:
+#  password:
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?createDatabaseIfNotExist=true
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      auto-commit: false
+      connection-test-query: SELECT 1
+      minimum-idle: 10
+      maximum-pool-size: 20
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        hbm2ddl.auto: create
+    open-in-view: false
+
+  data:
+    redis:
+      host: ${REDIS_HOST}  # This will be overridden by the secret.
+      port: ${REDIS_PORT}  # This will be overridden by the secret.
+      timeout: 10  # Redis connection timeout.
+      password: ${REDIS_PASSWORD}  # This will be overridden by the secret.
+
+  mail:
+    host: smtp.gmail.com  # SMTP server for sending emails.
+    port: 587  # Port for the SMTP server.
+    username: ${SMTP_USERNAME}  # This will be overridden by the secret.
+    password: ${SMTP_PASSWORD}  # This will be overridden by the secret.
+    properties:
+      mail:
+        smtp:
+          auth: true  # Enables SMTP authentication.
+          starttls:
+            enable: true  # Enables STARTTLS for secure email transmission.
+          ssl:
+            protocols: TLSv1.2  # Specifies SSL protocols.
+          connection timeout: 5000  # SMTP connection timeout in milliseconds.
+          timeout: 5000  # SMTP timeout in milliseconds.
+          write timeout: 5000  # SMTP write timeout in milliseconds.
+
+jwt:
+  secret: ${JWT_SECRET}  # This will be overridden by the secret.
+
+volume-path:
+  persistent-volume-data: "/usr/src/myapp/files/dev/"
+  pod-volume-data: "/usr/src/myapp/tmp/"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+
+

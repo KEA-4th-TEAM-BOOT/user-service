@@ -1,7 +1,7 @@
 server:
   port: 8080
   servlet:
-    contextPath: /api/v1/user
+    contextPath: /api/v1
 
 ## Database 접속 정보 위치 (Secret으로 주입)
 #mysql:

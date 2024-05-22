@@ -60,24 +60,19 @@ public class UserService {
         user.changePassword(encryptedPw);
     }
 
+    public Boolean checkEmail(String email) {
+        User user = userRepository.findByEmail(email);
+        return user == null;
+    }
+
+    public Boolean checkUserLink(String userLink) {
+        User user = userRepository.findByUserLink(userLink);
+        return user == null;
+    }
+
     // Internal API
     public Long getUserByUserLink(String userLink) {
         return userRepository.findByUserLink(userLink).getId();
     }
 
-    public Boolean checkEmail(String email) {
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
-            return true;
-        } else
-            return false;
-    }
-
-    public Boolean checkUserLink(String userLink) {
-        User user = userRepository.findByUserLink(userLink);
-        if (user == null) {
-            return true;
-        } else
-            return false;
-    }
 }

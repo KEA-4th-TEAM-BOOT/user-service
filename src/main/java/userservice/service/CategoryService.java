@@ -28,7 +28,7 @@ public class CategoryService {
     public void createCategory(String token, String categoryName) {
         String accessToken = token.substring(7);
         Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
-        User user = userRepository.findById(userId).orElseThrow(()-> new RuntimeException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         Category category = Category.createCategory(user, categoryName);
         categoryRepository.save(category);
     }
@@ -36,7 +36,7 @@ public class CategoryService {
     public List<CategoryResponseDto> getCategoryList(HttpServletRequest httpServletRequest) {
         String accessToken = jwtTokenProvider.resolveToken(httpServletRequest);
         Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
-        User user = userRepository.findById(userId).orElseThrow(()-> new RuntimeException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
         // Stream을 사용하여 각 카테고리의 이름을 추출하고 리스트로 수집
         return user.getCategoryList().stream()

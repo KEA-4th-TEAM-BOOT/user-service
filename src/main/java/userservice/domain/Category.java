@@ -22,8 +22,10 @@ public class Category extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(length = 30)
     private String categoryName;
+
     @ColumnDefault("False")
     private boolean existSubCategory;
 
@@ -34,7 +36,7 @@ public class Category extends BaseTimeEntity {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SubCategory> subCategoryList = new ArrayList<>();
 
-    public static Category createCategory(User user, String categoryName){
+    public static Category createCategory(User user, String categoryName) {
         Category category = Category.builder()
                 .user(user)
                 .categoryName(categoryName)
@@ -43,12 +45,12 @@ public class Category extends BaseTimeEntity {
         return category;
     }
 
-    public void updateCategory(BaseCategoryEnumVo baseCategoryEnumVo){
+    public void updateCategory(BaseCategoryEnumVo baseCategoryEnumVo) {
         this.categoryName = baseCategoryEnumVo.categoryName();
         this.existSubCategory = baseCategoryEnumVo.existSubCategory();
     }
 
-    public void addSubCategory(SubCategory subCategory){
+    public void addSubCategory(SubCategory subCategory) {
         this.subCategoryList.add(subCategory);
     }
 }

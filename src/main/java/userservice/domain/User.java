@@ -27,25 +27,35 @@ public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(length = 100)
     private String name;
-    @Email    // 나중에 다시 주석 뺴주기
+
+    @Email
     @Column(length = 100)
     private String email;
+
     @Column(length = 100)
     private String password;
+
     @Column(length = 30)
     private String nickname;
+
     @Column(length = 200)
     private String profileUrl;
+
     @Column(length = 100)
     private String introduce;
+
     @Column(length = 30)
     private String userLink;
+
     @ColumnDefault("0")
     private Integer followingNum;
+
     @ColumnDefault("0")
     private Integer followerNum;
+
     @ColumnDefault("0")
     private Integer latestPostId;
 
@@ -57,18 +67,20 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "followerUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Follow> followerList = new ArrayList<>();
-    public static User createUser(BaseUserRequestDto baseUserRequestDto){
+
+    public static User createUser(BaseUserRequestDto baseUserRequestDto) {
 
         return User.builder()
                 .name(baseUserRequestDto.name())
                 .email(baseUserRequestDto.email())
                 .password(new BCryptPasswordEncoder().encode(baseUserRequestDto.password()))
                 .nickname(baseUserRequestDto.nickname())
+                .profileUrl(baseUserRequestDto.profileUrl())
                 .userLink(baseUserRequestDto.userLink())
                 .build();
     }
 
-    public void updateUser(BaseUserUpdateRequestDto baseUserUpdateRequestDto){
+    public void updateUser(BaseUserUpdateRequestDto baseUserUpdateRequestDto) {
         this.nickname = updateValue(this.nickname, baseUserUpdateRequestDto.nickname());
         this.profileUrl = updateValue(this.profileUrl, baseUserUpdateRequestDto.profileUrl());
         this.introduce = updateValue(this.introduce, baseUserUpdateRequestDto.introduce());
@@ -77,18 +89,19 @@ public class User extends BaseTimeEntity {
         this.latestPostId = updateValue(this.latestPostId, baseUserUpdateRequestDto.latestPostId());
     }
 
-    public void changePassword(String encryptedPw){
+    public void changePassword(String encryptedPw) {
         this.password = updateValue(this.password, encryptedPw);
     }
 
-    public void addCategory(Category category){
+    public void addCategory(Category category) {
         this.categoryList.add(category);
     }
 
-    public void addFollowingUser(Follow follow){
+    public void addFollowingUser(Follow follow) {
         this.followingList.add(follow);
     }
-    public void addFollowerUser(Follow follow){
+
+    public void addFollowerUser(Follow follow) {
         this.followerList.add(follow);
     }
 

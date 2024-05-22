@@ -25,7 +25,7 @@ public class SubCategory extends BaseTimeEntity {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
-    public static SubCategory createSubCategory(Category category, String subCategoryName){
+    public static SubCategory createSubCategory(Category category, String subCategoryName) {
         SubCategory subCategory = SubCategory.builder()
                 .category(category)
                 .subCategoryName(subCategoryName)
@@ -35,7 +35,7 @@ public class SubCategory extends BaseTimeEntity {
         return subCategory;
     }
 
-    public void updateSubCategory(String subCategoryName){
+    public void updateSubCategory(String subCategoryName) {
         this.subCategoryName = subCategoryName;
     }
 }

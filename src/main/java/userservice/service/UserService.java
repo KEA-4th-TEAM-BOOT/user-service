@@ -4,14 +4,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import userservice.config.JwtTokenProvider;
+import userservice.domain.Follow;
 import userservice.domain.User;
 import userservice.dto.request.BaseUserUpdateRequestDto;
 import userservice.dto.response.CategoryResponseDto;
 import userservice.dto.response.BaseUserResponseDto;
+import userservice.dto.response.FollowResponseDto;
 import userservice.repository.UserRepository;
 
 import java.util.List;
@@ -48,8 +49,31 @@ public class UserService {
                 .map(category -> new CategoryResponseDto(category.getCategoryName(), category.isExistSubCategory()))
                 .collect(Collectors.toList());
 
+        List<Follow> followingList = user.getFollowingList().stream().toList();
+        List<Follow> followerList = user.getFollowerList().stream().toList();
+
+        List<FollowResponseDto> followingUsers = followingList.stream()
+                .map(following -> {
+                    User followingUser = following.getFollowingUser();
+                    return new FollowResponseDto(
+                            followingUser.getNickname(),
+                            followingUser.getEmail(),
+                            followingUser.getProfileUrl());
+                })
+                .toList();
+
+        List<FollowResponseDto> followerUsers = followerList.stream()
+                .map(follower -> {
+                    User followerUser = follower.getFollowerUser();
+                    return new FollowResponseDto(
+                            followerUser.getNickname(),
+                            followerUser.getEmail(),
+                            followerUser.getProfileUrl());
+                })
+                .toList();
+
         // DTO 생성 및 카테고리 이름 리스트 설정
-        return BaseUserResponseDto.of(user, categoryNames);
+        return BaseUserResponseDto.of(user, categoryNames, followingUsers, followerUsers);
     }
 
     public void changePassword(String token, String rawPassword) {

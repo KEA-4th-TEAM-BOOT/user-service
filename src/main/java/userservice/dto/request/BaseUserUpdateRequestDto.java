@@ -8,7 +8,9 @@ public record BaseUserUpdateRequestDto(
         @NotNull String introduce,
         @NotNull Integer followingNum,
         @NotNull Integer followerNum,
-        @NotNull Integer latestPostId
+        @NotNull Integer latestPostId,
+        @NotNull Integer postCnt,
+        @NotNull String voiceModelUrl
 ) {
 
 }

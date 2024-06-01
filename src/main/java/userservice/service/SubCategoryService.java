@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import userservice.domain.Category;
 import userservice.domain.SubCategory;
+import userservice.dto.response.SubCategoryResponseDto;
 import userservice.repository.CategoryRepository;
 import userservice.repository.SubCategoryRepository;
 import userservice.vo.BaseCategoryEnumVo;
@@ -27,11 +28,15 @@ public class SubCategoryService {
         subCategoryRepository.save(subCategory);
     }
 
-    public List<String> getSubCategoryList(Long CategoryId) {
+    public List<SubCategoryResponseDto> getSubCategoryList(Long CategoryId) {
         Category category = categoryRepository.findById(CategoryId).orElseThrow();
         // 찾아온 카테고리에서 서브 카테고리 리스트를 추출하여 서브 카테고리 이름만 모아 리스트로 반환합니다.
         return category.getSubCategoryList().stream()
-                .map(SubCategory::getSubCategoryName)
+                .map(subCategory -> new SubCategoryResponseDto(
+                        subCategory.getId(),
+                        subCategory.getSubCategoryName(),
+                        subCategory.getCount()
+                ))
                 .collect(Collectors.toList());
     }
 

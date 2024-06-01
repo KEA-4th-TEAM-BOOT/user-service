@@ -3,6 +3,7 @@ package userservice.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import userservice.global.BaseTimeEntity;
 import userservice.vo.BaseCategoryEnumVo;
 
@@ -20,6 +21,9 @@ public class SubCategory extends BaseTimeEntity {
 
     @Column(length = 30)
     private String subCategoryName;
+
+    @ColumnDefault("0")
+    private Long count;
 
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")

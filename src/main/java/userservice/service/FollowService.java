@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import userservice.config.JwtTokenProvider;
 import userservice.domain.Follow;
 import userservice.domain.User;
+import userservice.dto.response.FollowResponseDto;
 import userservice.repository.FollowRepository;
 import userservice.repository.UserRepository;
 
@@ -30,21 +31,21 @@ public class FollowService {
         Follow.createFollow(followerUser, followedUser);
     }
 
-    public List<String> getFollowingList(HttpServletRequest httpServletRequest) {
+    public List<FollowResponseDto> getFollowingList(HttpServletRequest httpServletRequest) {
         String accessToken = jwtTokenProvider.resolveToken(httpServletRequest);
         Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
         User user = userRepository.findById(userId).orElseThrow();
         return user.getFollowingList().stream()
-                .map(follower -> follower.getFollowerUser().getName())
+                .map(follower -> new FollowResponseDto(follower.getFollowerUser().getNickname(), follower.getFollowerUser().getEmail(), follower.getFollowerUser().getProfileUrl(), follower.getFollowingUser().getUserLink()))
                 .toList();
     }
 
-    public List<String> getFollowedList(HttpServletRequest httpServletRequest) {
+    public List<FollowResponseDto> getFollowedList(HttpServletRequest httpServletRequest) {
         String accessToken = jwtTokenProvider.resolveToken(httpServletRequest);
         Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
         User user = userRepository.findById(userId).orElseThrow();
         return user.getFollowingList().stream()
-                .map(followed -> followed.getFollowerUser().getName())
+                .map(follower -> new FollowResponseDto(follower.getFollowerUser().getNickname(), follower.getFollowerUser().getEmail(), follower.getFollowerUser().getProfileUrl(), follower.getFollowingUser().getUserLink()))
                 .toList();
     }
 

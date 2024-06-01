@@ -119,7 +119,8 @@ public class UserService {
                     return new FollowResponseDto(
                             followingUser.getNickname(),
                             followingUser.getEmail(),
-                            followingUser.getProfileUrl());
+                            followingUser.getProfileUrl(),
+                            followingUser.getUserLink());
                 })
                 .toList();
 
@@ -129,7 +130,8 @@ public class UserService {
                     return new FollowResponseDto(
                             followerUser.getNickname(),
                             followerUser.getEmail(),
-                            followerUser.getProfileUrl());
+                            followerUser.getProfileUrl(),
+                            followerUser.getUserLink());
                 })
                 .toList();
 

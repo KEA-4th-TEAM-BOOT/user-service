@@ -12,6 +12,7 @@ public record BaseUserResponseDto(
         String email,
         String nickname,
         String profileUrl,
+        String introduce,
         String userLink,
         Integer followingNum,
         Integer followerNum,
@@ -28,6 +29,7 @@ public record BaseUserResponseDto(
                 .email(user.getEmail())
                 .nickname(user.getNickname())
                 .profileUrl(user.getProfileUrl())
+                .introduce(user.getIntroduce())
                 .userLink(user.getUserLink())
                 .followingNum(user.getFollowingNum())
                 .followerNum(user.getFollowerNum())

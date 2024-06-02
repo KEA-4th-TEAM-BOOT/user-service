@@ -36,7 +36,13 @@ public class FollowService {
         Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
         User user = userRepository.findById(userId).orElseThrow();
         return user.getFollowingList().stream()
-                .map(follower -> new FollowResponseDto(follower.getFollowerUser().getNickname(), follower.getFollowerUser().getEmail(), follower.getFollowerUser().getProfileUrl(), follower.getFollowingUser().getUserLink()))
+                .map(follower -> new FollowResponseDto(
+                        follower.getFollowerUser().getId(),
+                        follower.getFollowerUser().getNickname(),
+                        follower.getFollowerUser().getEmail(),
+                        follower.getFollowerUser().getProfileUrl(),
+                        follower.getFollowingUser().getUserLink())
+                )
                 .toList();
     }
 
@@ -45,7 +51,13 @@ public class FollowService {
         Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
         User user = userRepository.findById(userId).orElseThrow();
         return user.getFollowingList().stream()
-                .map(follower -> new FollowResponseDto(follower.getFollowerUser().getNickname(), follower.getFollowerUser().getEmail(), follower.getFollowerUser().getProfileUrl(), follower.getFollowingUser().getUserLink()))
+                .map(follower -> new FollowResponseDto(
+                        follower.getFollowingUser().getId(),
+                        follower.getFollowerUser().getNickname(),
+                        follower.getFollowerUser().getEmail(),
+                        follower.getFollowerUser().getProfileUrl(),
+                        follower.getFollowingUser().getUserLink())
+                )
                 .toList();
     }
 

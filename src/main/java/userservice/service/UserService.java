@@ -60,6 +60,7 @@ public class UserService {
                 .map(following -> {
                     User followingUser = following.getFollowingUser();
                     return new FollowResponseDto(
+                            followingUser.getId(),
                             followingUser.getNickname(),
                             followingUser.getEmail(),
                             followingUser.getProfileUrl(),
@@ -71,6 +72,7 @@ public class UserService {
                 .map(follower -> {
                     User followerUser = follower.getFollowerUser();
                     return new FollowResponseDto(
+                            followerUser.getId(),
                             followerUser.getNickname(),
                             followerUser.getEmail(),
                             followerUser.getProfileUrl(),
@@ -119,6 +121,7 @@ public class UserService {
                 .map(following -> {
                     User followingUser = following.getFollowingUser();
                     return new FollowResponseDto(
+                            followingUser.getId(),
                             followingUser.getNickname(),
                             followingUser.getEmail(),
                             followingUser.getProfileUrl(),
@@ -130,6 +133,7 @@ public class UserService {
                 .map(follower -> {
                     User followerUser = follower.getFollowerUser();
                     return new FollowResponseDto(
+                            followerUser.getId(),
                             followerUser.getNickname(),
                             followerUser.getEmail(),
                             followerUser.getProfileUrl(),

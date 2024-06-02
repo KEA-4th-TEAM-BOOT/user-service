@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import userservice.domain.Follow;
+import userservice.dto.response.FollowResponseDto;
 import userservice.service.FollowService;
 
 import java.util.List;
@@ -24,14 +25,14 @@ public class FollowController {
     }
 
     @GetMapping("/following")
-    public ResponseEntity<List<String>> getFollowingList(HttpServletRequest httpServletRequest) {
-        List<String> followerList = followService.getFollowingList(httpServletRequest);
+    public ResponseEntity<List<FollowResponseDto>> getFollowingList(HttpServletRequest httpServletRequest) {
+        List<FollowResponseDto> followerList = followService.getFollowingList(httpServletRequest);
         return ResponseEntity.ok(followerList);
     }
 
     @GetMapping("/follower")
-    public ResponseEntity<List<String>> getFollowerList(HttpServletRequest httpServletRequest) {
-        List<String> followedList = followService.getFollowedList(httpServletRequest);
+    public ResponseEntity<List<FollowResponseDto>> getFollowerList(HttpServletRequest httpServletRequest) {
+        List<FollowResponseDto> followedList = followService.getFollowedList(httpServletRequest);
         return ResponseEntity.ok(followedList);
     }
 

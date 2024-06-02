@@ -43,4 +43,9 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @PostMapping("/{categoryId}")
+    public ResponseEntity<Void> IncreasePostCount(@PathVariable Long categoryId){
+        categoryService.increasePostCount(categoryId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }

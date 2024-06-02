@@ -1,6 +1,5 @@
 package userservice.service;
 
-import io.jsonwebtoken.Jwt;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +23,7 @@ public class CategoryService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final SubCategoryService subCategoryService;
 
     public void createCategory(String token, String categoryName) {
         String accessToken = token.substring(7);
@@ -40,7 +40,7 @@ public class CategoryService {
 
         // Stream을 사용하여 각 카테고리의 이름을 추출하고 리스트로 수집
         return user.getCategoryList().stream()
-                .map(category -> new CategoryResponseDto(category.getCategoryName(), category.isExistSubCategory()))
+                .map(category -> new CategoryResponseDto(category.getId(), category.getCategoryName(), category.isExistSubCategory(), category.getCount(), subCategoryService.getSubCategoryList(category.getId())))
                 .toList();
     }
 
@@ -51,5 +51,10 @@ public class CategoryService {
     public void updateCategory(Long categoryId, BaseCategoryEnumVo baseCategoryEnumVo) {
         Optional<Category> category = Optional.of(categoryRepository.findById(categoryId).orElseThrow());
         category.get().updateCategory(baseCategoryEnumVo);
+    }
+
+    public void increasePostCount(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow();
+        category.addPostCount();
     }
 }

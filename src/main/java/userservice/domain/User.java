@@ -59,13 +59,19 @@ public class User extends BaseTimeEntity {
     @ColumnDefault("0")
     private Integer latestPostId;
 
+    @ColumnDefault("0")
+    private Integer postCnt;
+
+    @Column(length = 200)
+    private String voiceModelUrl;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Category> categoryList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "followingUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "followingUser", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Follow> followingList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "followerUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "followerUser", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Follow> followerList = new ArrayList<>();
 
     public static User createUser(BaseUserRequestDto baseUserRequestDto) {
@@ -87,6 +93,8 @@ public class User extends BaseTimeEntity {
         this.followingNum = updateValue(this.followingNum, baseUserUpdateRequestDto.followingNum());
         this.followerNum = updateValue(this.followerNum, baseUserUpdateRequestDto.followerNum());
         this.latestPostId = updateValue(this.latestPostId, baseUserUpdateRequestDto.latestPostId());
+        this.postCnt = updateValue(this.postCnt, baseUserUpdateRequestDto.postCnt());
+        this.voiceModelUrl = updateValue(this.voiceModelUrl, baseUserUpdateRequestDto.voiceModelUrl());
     }
 
     public void changePassword(String encryptedPw) {

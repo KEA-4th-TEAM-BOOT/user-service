@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import userservice.domain.SubCategory;
+import userservice.dto.response.SubCategoryResponseDto;
 import userservice.service.SubCategoryService;
 
 import java.util.List;
@@ -25,8 +26,8 @@ public class SubCategoryController {
     }
 
     @GetMapping("/{category_id}")
-    public ResponseEntity<List<String>> getSubCategory(@PathVariable Long category_id) {
-        List<String> subCategoryList = subCategoryService.getSubCategoryList(category_id);
+    public ResponseEntity<List<SubCategoryResponseDto>> getSubCategory(@PathVariable Long category_id) {
+        List<SubCategoryResponseDto> subCategoryList = subCategoryService.getSubCategoryList(category_id);
         return ResponseEntity.ok(subCategoryList);
     }
 

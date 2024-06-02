@@ -29,6 +29,9 @@ public class Category extends BaseTimeEntity {
     @ColumnDefault("False")
     private boolean existSubCategory;
 
+    @ColumnDefault("0")
+    private Long count;
+
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
@@ -52,6 +55,10 @@ public class Category extends BaseTimeEntity {
 
     public void addSubCategory(SubCategory subCategory) {
         this.subCategoryList.add(subCategory);
+    }
+
+    public void addPostCount(){
+        this.count++;
     }
 }
 

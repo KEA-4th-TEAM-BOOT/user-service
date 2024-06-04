@@ -27,12 +27,11 @@ public class AuthService {
     private final RedisTemplate<String, String> redisTemplate;
     private final CategoryService categoryService;
 
-    public void register(BaseUserRequestDto baseUserRequestDto) {
-
+    public User register(BaseUserRequestDto baseUserRequestDto) {
 //        String encryptedPw = passwordEncoder.encode(baseUserRequestDto.password());
         User user = User.createUser(baseUserRequestDto);
-        categoryService.createCategoryUsingUserId(user.getId(), baseUserRequestDto.categoryName());
         userRepository.save(user);
+        return user;
     }
 
 

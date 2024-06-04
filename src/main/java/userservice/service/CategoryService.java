@@ -66,4 +66,10 @@ public class CategoryService {
                 .map(category -> new CategoryResponseDto(category.getId(), category.getCategoryName(), category.isExistSubCategory(), category.getCount(), subCategoryService.getSubCategoryList(category.getId())))
                 .toList();
     }
+
+    public void createCategoryUsingUserId(Long userId, String categoryName) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        Category category = Category.createCategory(user, categoryName);
+        categoryRepository.save(category);
+    }
 }

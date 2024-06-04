@@ -25,11 +25,13 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
+    private final CategoryService categoryService;
 
     public void register(BaseUserRequestDto baseUserRequestDto) {
 
 //        String encryptedPw = passwordEncoder.encode(baseUserRequestDto.password());
         User user = User.createUser(baseUserRequestDto);
+        categoryService.createCategoryUsingUserId(user.getId(), baseUserRequestDto.categoryName());
         userRepository.save(user);
     }
 

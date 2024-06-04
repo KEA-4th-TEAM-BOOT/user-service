@@ -11,7 +11,7 @@ pipeline {
         GITHUB_URL = 'https://github.com/KEA-4th-TEAM-BOOT/user-service.git'
         APP_VERSION = '1.1.1'
         BUILD_DATE = sh(script: "echo `date +%y%m%d.%d%H%M`", returnStdout: true).trim()
-        TAG = "${APP_VERSION}"
+        TAG = "${APP_VERSION}-${BUILD_DATE}"
         IMAGE_NAME = 'voda-user'
         SERVICE_NAME = 'user'
         ECR_REPOSITORY = 'voda-user' // AWS ECR 리포지토리 이름

@@ -5,6 +5,8 @@ import lombok.Builder;
 @Builder
 public record LoginResponseDto(
         TokenResponseDto tokenResponseDto,
-        String userLink
+        Long userId,
+        String userLink,
+        String profileUrl
 ) {
 }

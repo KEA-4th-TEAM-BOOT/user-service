@@ -49,39 +49,7 @@ public class UserService {
         String accessToken = jwtTokenProvider.resolveToken(request);
         Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
         User user = userRepository.findById(userId).orElseThrow();
-        List<CategoryResponseDto> categoryNames = user.getCategoryList().stream()
-                .map(category -> new CategoryResponseDto(category.getId(), category.getCategoryName(), category.isExistSubCategory(), category.getCount(), subCategoryService.getSubCategoryList(category.getId())))
-                .collect(Collectors.toList());
-
-        List<Follow> followingList = user.getFollowingList().stream().toList();
-        List<Follow> followerList = user.getFollowerList().stream().toList();
-
-        List<FollowResponseDto> followingUsers = followingList.stream()
-                .map(following -> {
-                    User followingUser = following.getFollowingUser();
-                    return new FollowResponseDto(
-                            followingUser.getId(),
-                            followingUser.getNickname(),
-                            followingUser.getEmail(),
-                            followingUser.getProfileUrl(),
-                            followingUser.getUserLink());
-                })
-                .toList();
-
-        List<FollowResponseDto> followerUsers = followerList.stream()
-                .map(follower -> {
-                    User followerUser = follower.getFollowerUser();
-                    return new FollowResponseDto(
-                            followerUser.getId(),
-                            followerUser.getNickname(),
-                            followerUser.getEmail(),
-                            followerUser.getProfileUrl(),
-                            followerUser.getUserLink());
-                })
-                .toList();
-
-        // DTO 생성 및 카테고리 이름 리스트 설정
-        return BaseUserResponseDto.of(user, categoryNames, followingUsers, followerUsers);
+        return getBaseUserResponseDto(user);
     }
 
     public void changePassword(String token, String rawPassword) {
@@ -103,13 +71,29 @@ public class UserService {
     }
 
     // Internal API
-    public Long getUserByUserLink(String userLink) {
+    public Long getUserIdByUserLink(String userLink) {
         return userRepository.findByUserLink(userLink).getId();
     }
 
     public BaseUserResponseDto getUserById(Long userId) {
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId).orElseThrow();
 
+        return getBaseUserResponseDto(user);
+    }
+
+    public void increasePostCnt(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        int currentCnt = user.getPostCnt() + 1;
+        user.updateUser(new BaseUserUpdateRequestDto(null, null, null, null, null, null, currentCnt, null));
+    }
+
+    public BaseUserResponseDto getUserByUserLink(String userLink) {
+        User user = userRepository.findByUserLink(userLink);
+
+        return getBaseUserResponseDto(user);
+    }
+
+    private BaseUserResponseDto getBaseUserResponseDto(User user) {
         List<CategoryResponseDto> categoryNames = user.getCategoryList().stream()
                 .map(category -> new CategoryResponseDto(category.getId(), category.getCategoryName(), category.isExistSubCategory(), category.getCount(), subCategoryService.getSubCategoryList(category.getId())))
                 .collect(Collectors.toList());

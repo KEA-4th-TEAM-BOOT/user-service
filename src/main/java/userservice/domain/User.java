@@ -107,10 +107,11 @@ public class User extends BaseTimeEntity {
 
     public void addFollowingUser(Follow follow) {
         this.followingList.add(follow);
+        this.followingNum = this.followingList.size();
     }
 
     public void addFollowerUser(Follow follow) {
         this.followerList.add(follow);
+        this.followerNum = this.followerList.size();
     }
-
 }

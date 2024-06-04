@@ -29,10 +29,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        hbm2ddl.auto: create
+      ddl-auto: validate
     open-in-view: false
 
   data:
@@ -40,7 +37,7 @@ spring:
       host: ${REDIS_HOST}  # This will be overridden by the secret.
       port: ${REDIS_PORT}  # This will be overridden by the secret.
       timeout: 10  # Redis connection timeout.
-      password: ${REDIS_PASSWORD}  # This will be overridden by the secret.
+      password: "" # This will be overridden by the secret.
 
   mail:
     host: smtp.gmail.com  # SMTP server for sending emails.

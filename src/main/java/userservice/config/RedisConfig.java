@@ -41,13 +41,16 @@ public class RedisConfig {
     public LettuceConnectionFactory lettuceConnectionFactory() {
         final SocketOptions socketoptions = SocketOptions.builder().connectTimeout(Duration.ofSeconds(10)).build();
         final ClientOptions clientoptions = ClientOptions.builder().socketOptions(socketoptions).build();
-        LettuceClientConfiguration lettuceClientConfiguration = LettuceClientConfiguration.builder().clientOptions(clientoptions)
+        LettuceClientConfiguration lettuceClientConfiguration = LettuceClientConfiguration.builder()
+                .clientOptions(clientoptions)
                 .commandTimeout(Duration.ofMinutes(1))
                 .shutdownTimeout(Duration.ZERO)
                 .build();
 
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host, port);
-        redisStandaloneConfiguration.setPassword(password);  // Set the password
+        if (!password.isEmpty()) {
+            redisStandaloneConfiguration.setPassword(password);
+        }
         redisStandaloneConfiguration.setDatabase(0);
 
         return new LettuceConnectionFactory(redisStandaloneConfiguration, lettuceClientConfiguration);

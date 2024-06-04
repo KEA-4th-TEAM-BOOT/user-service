@@ -57,7 +57,10 @@ public class AuthService {
                         .refreshToken(refreshToken)
                         .build()
                 )
-                        .userLink(user.getUserLink()).build();
+                .userId(user.getId())
+                .userLink(user.getUserLink())
+                .profileUrl(user.getProfileUrl())
+                .build();
 
         redisTemplate.opsForValue().set(String.valueOf(user.getId()), refreshToken);
         return loginResponseDto;

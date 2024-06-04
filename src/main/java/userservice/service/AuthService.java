@@ -25,11 +25,13 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
+    private final CategoryService categoryService;
 
     public void register(BaseUserRequestDto baseUserRequestDto) {
 
 //        String encryptedPw = passwordEncoder.encode(baseUserRequestDto.password());
         User user = User.createUser(baseUserRequestDto);
+        categoryService.createCategoryUsingUserId(user.getId(), baseUserRequestDto.categoryName());
         userRepository.save(user);
     }
 
@@ -57,7 +59,10 @@ public class AuthService {
                         .refreshToken(refreshToken)
                         .build()
                 )
-                        .userLink(user.getUserLink()).build();
+                .userId(user.getId())
+                .userLink(user.getUserLink())
+                .profileUrl(user.getProfileUrl())
+                .build();
 
         redisTemplate.opsForValue().set(String.valueOf(user.getId()), refreshToken);
         return loginResponseDto;

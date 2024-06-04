@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import userservice.config.JwtTokenProvider;
 import userservice.domain.Follow;
 import userservice.domain.User;
+import userservice.dto.request.BaseUserUpdateRequestDto;
 import userservice.dto.response.FollowResponseDto;
 import userservice.repository.FollowRepository;
 import userservice.repository.UserRepository;
@@ -67,6 +68,8 @@ public class FollowService {
         User followingUser = userRepository.findById(userId).orElseThrow();
         User followerUser = userRepository.findByUserLink(userLink);
         followRepository.deleteFollowByFollowingUserAndFollowerUser(followingUser, followerUser);
+        followingUser.updateUser(new BaseUserUpdateRequestDto(null, null, null, followingUser.getFollowingNum() - 1, null, null, null, null));
+        followerUser.updateUser(new BaseUserUpdateRequestDto(null, null, null, followerUser.getFollowerNum() - 1, null, null, null, null));
     }
 }
 

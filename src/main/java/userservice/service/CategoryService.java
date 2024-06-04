@@ -57,4 +57,19 @@ public class CategoryService {
         Category category = categoryRepository.findById(categoryId).orElseThrow();
         category.addPostCount();
     }
+
+    public List<CategoryResponseDto> getUserCategoryList(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Stream을 사용하여 각 카테고리의 이름을 추출하고 리스트로 수집
+        return user.getCategoryList().stream()
+                .map(category -> new CategoryResponseDto(category.getId(), category.getCategoryName(), category.isExistSubCategory(), category.getCount(), subCategoryService.getSubCategoryList(category.getId())))
+                .toList();
+    }
+
+    public void createCategoryUsingUserId(Long userId, String categoryName) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        Category category = Category.createCategory(user, categoryName);
+        categoryRepository.save(category);
+    }
 }

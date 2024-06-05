@@ -13,11 +13,7 @@ public class TokenUtils {
     }
 
     public Long getUserIdFromToken(String token) {
-        String accessToken = extractAccessToken(token);
-        return Long.valueOf(jwtTokenProvider.getUserId(accessToken));
+        return Long.valueOf(jwtTokenProvider.getUserId(token));
     }
 
-    public String extractAccessToken(String token) {
-        return token.substring(7); // Assuming "Bearer " prefix
-    }
 }

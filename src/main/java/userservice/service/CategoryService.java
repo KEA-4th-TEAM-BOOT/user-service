@@ -10,6 +10,7 @@ import userservice.domain.User;
 import userservice.dto.response.CategoryResponseDto;
 import userservice.repository.CategoryRepository;
 import userservice.repository.UserRepository;
+import userservice.utils.TokenUtils;
 import userservice.vo.BaseCategoryEnumVo;
 
 import java.util.List;
@@ -24,21 +25,19 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final SubCategoryService subCategoryService;
+    private final TokenUtils tokenUtils;
 
     public void createCategory(String token, String categoryName) {
-        String accessToken = token.substring(7);
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
+        Long userId = tokenUtils.getUserIdFromToken(token);
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         Category category = Category.createCategory(user, categoryName);
         categoryRepository.save(category);
     }
 
     public List<CategoryResponseDto> getCategoryList(HttpServletRequest httpServletRequest) {
-        String accessToken = jwtTokenProvider.resolveToken(httpServletRequest);
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
+        Long userId = tokenUtils.getUserIdFromToken(jwtTokenProvider.resolveToken(httpServletRequest));
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Stream을 사용하여 각 카테고리의 이름을 추출하고 리스트로 수집
         return user.getCategoryList().stream()
                 .map(category -> new CategoryResponseDto(category.getId(), category.getCategoryName(), category.isExistSubCategory(), category.getCount(), subCategoryService.getSubCategoryList(category.getId())))
                 .toList();

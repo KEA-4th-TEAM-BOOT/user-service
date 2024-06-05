@@ -28,8 +28,8 @@ public class AuthService {
     private final CategoryService categoryService;
 
     public User register(BaseUserRequestDto baseUserRequestDto) {
-//        String encryptedPw = passwordEncoder.encode(baseUserRequestDto.password());
-        User user = User.createUser(baseUserRequestDto);
+        String encryptedPw = passwordEncoder.encode(baseUserRequestDto.password());
+        User user = User.createUser(baseUserRequestDto, encryptedPw);
         userRepository.save(user);
         return user;
     }
@@ -37,7 +37,7 @@ public class AuthService {
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
 
-        User user = userRepository.findByEmail(loginRequestDto.email());
+        User user = userRepository.findByEmail(loginRequestDto.email()).orElseThrow();
         if (user == null)
             return LoginResponseDto.builder()
                     .tokenResponseDto(new TokenResponseDto(417, "존재하지 않는 이메일입니다.", null, null))
@@ -71,7 +71,7 @@ public class AuthService {
         String accessToken = jwtTokenProvider.resolveToken(httpServletRequest);
 //        jwtTokenProvider.validateRefreshToken(accessToken);
         String userId = jwtTokenProvider.getUserId(accessToken);
-        log.info("[Token Info] 해당 억세스 토큰의 사용자 아이디: " + userId);
+        log.info("[Token Info] 해당 억세스 토큰의 사용자 아이디: {}", userId);
         redisTemplate.delete(userId);
         log.info("[Logout] 로그아웃 완료");
     }

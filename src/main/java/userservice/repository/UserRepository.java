@@ -5,11 +5,12 @@ import org.springframework.stereotype.Repository;
 import userservice.domain.User;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
-    User findByUserLink(String userLink);
+    Optional<User> findByUserLink(String userLink);
 }

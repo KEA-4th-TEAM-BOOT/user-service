@@ -9,8 +9,10 @@ import userservice.domain.Follow;
 import userservice.domain.User;
 import userservice.dto.request.BaseUserUpdateRequestDto;
 import userservice.dto.response.FollowResponseDto;
+import userservice.exception.user.UserNotFoundException;
 import userservice.repository.FollowRepository;
 import userservice.repository.UserRepository;
+import userservice.utils.TokenUtils;
 
 import java.util.List;
 
@@ -22,20 +24,19 @@ public class FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final TokenUtils tokenUtils;
 
     public void createFollow(String token, String userLink) {
-        String accessToken = token.substring(7);
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
+        Long userId = tokenUtils.getUserIdFromToken(token);
 
-        User followerUser = userRepository.findById(userId).orElseThrow();
-        User followedUser = userRepository.findByUserLink(userLink);
-        Follow.createFollow(followerUser, followedUser);
+        User followingUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Follower user not found with id: " + userId));
+        User followerUser = userRepository.findByUserLink(userLink).orElseThrow(() -> new UserNotFoundException("Followed user not found with userLink: " + userLink));
+        Follow.createFollow(followingUser, followerUser);
     }
 
     public List<FollowResponseDto> getFollowingList(HttpServletRequest httpServletRequest) {
-        String accessToken = jwtTokenProvider.resolveToken(httpServletRequest);
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
-        User user = userRepository.findById(userId).orElseThrow();
+        Long userId = tokenUtils.getUserIdFromToken(jwtTokenProvider.resolveToken(httpServletRequest));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
         return user.getFollowingList().stream()
                 .map(follower -> new FollowResponseDto(
                         follower.getFollowerUser().getId(),
@@ -48,9 +49,8 @@ public class FollowService {
     }
 
     public List<FollowResponseDto> getFollowedList(HttpServletRequest httpServletRequest) {
-        String accessToken = jwtTokenProvider.resolveToken(httpServletRequest);
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
-        User user = userRepository.findById(userId).orElseThrow();
+        Long userId = tokenUtils.getUserIdFromToken(jwtTokenProvider.resolveToken(httpServletRequest));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
         return user.getFollowingList().stream()
                 .map(follower -> new FollowResponseDto(
                         follower.getFollowingUser().getId(),
@@ -63,10 +63,9 @@ public class FollowService {
     }
 
     public void deleteFollow(String token, String userLink) {
-        String accessToken = token.substring(7);
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
-        User followingUser = userRepository.findById(userId).orElseThrow();
-        User followerUser = userRepository.findByUserLink(userLink);
+        Long userId = tokenUtils.getUserIdFromToken(token);
+        User followingUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Follower user not found with id: " + userId));
+        User followerUser = userRepository.findByUserLink(userLink).orElseThrow(() -> new UserNotFoundException("Followed user not found with userLink: " + userLink));
         followRepository.deleteFollowByFollowingUserAndFollowerUser(followingUser, followerUser);
         followingUser.updateUser(new BaseUserUpdateRequestDto(null, null, null, followingUser.getFollowingNum() - 1, null, null, null, null));
         followerUser.updateUser(new BaseUserUpdateRequestDto(null, null, null, followerUser.getFollowerNum() - 1, null, null, null, null));

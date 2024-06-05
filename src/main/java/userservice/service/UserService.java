@@ -10,15 +10,14 @@ import userservice.config.JwtTokenProvider;
 import userservice.controller.SubCategoryController;
 import userservice.domain.Follow;
 import userservice.domain.User;
-import userservice.dto.request.BaseUserRequestDto;
 import userservice.dto.request.BaseUserUpdateRequestDto;
 import userservice.dto.response.CategoryResponseDto;
 import userservice.dto.response.BaseUserResponseDto;
 import userservice.dto.response.FollowResponseDto;
 import userservice.repository.UserRepository;
+import userservice.utils.TokenUtils;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -31,48 +30,52 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final SubCategoryController subCategoryController;
     private final SubCategoryService subCategoryService;
+    private final TokenUtils tokenUtils;
 
     public void deleteUser(HttpServletRequest request) {
-        String accessToken = jwtTokenProvider.resolveToken(request);
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
+        String token = jwtTokenProvider.resolveToken(request);
+        log.info("Resolved token: {}", token);
+
+        Long userId = tokenUtils.getUserIdFromToken(token);
+        log.info("Extracted userId: {}", userId);
+
+        userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        log.info("User found, proceeding to delete");
         userRepository.deleteById(userId);
     }
 
     public void updateUser(String token, BaseUserUpdateRequestDto baseUserUpdateRequestDto) {
-        String accessToken = token.substring(7);
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
-        Optional<User> user = Optional.of(userRepository.findById(userId).orElseThrow());
-        user.get().updateUser(baseUserUpdateRequestDto);
+        Long userId = tokenUtils.getUserIdFromToken(token);
+        User user = userRepository.findById(userId).orElseThrow();
+        user.updateUser(baseUserUpdateRequestDto);
     }
 
     public BaseUserResponseDto getUser(HttpServletRequest request) {
-        String accessToken = jwtTokenProvider.resolveToken(request);
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
+        Long userId = tokenUtils.getUserIdFromToken(jwtTokenProvider.resolveToken(request));
         User user = userRepository.findById(userId).orElseThrow();
         return getBaseUserResponseDto(user);
     }
 
     public void changePassword(String token, String rawPassword) {
-        String accessToken = token.substring(7);
-        Long userId = Long.valueOf(jwtTokenProvider.getUserId(accessToken));
+        Long userId = tokenUtils.getUserIdFromToken(token);
         User user = userRepository.findById(userId).orElseThrow();
         String encryptedPw = new BCryptPasswordEncoder().encode(rawPassword);
         user.changePassword(encryptedPw);
     }
 
-    public Boolean checkEmail(String email) {
-        User user = userRepository.findByEmail(email);
-        return user == null;
+    public boolean checkEmail(String email) {
+        return userRepository.findByEmail(email).isEmpty();
     }
 
-    public Boolean checkUserLink(String userLink) {
-        User user = userRepository.findByUserLink(userLink);
-        return user == null;
+    public boolean checkUserLink(String userLink) {
+        return userRepository.findByUserLink(userLink).isEmpty();
     }
 
     // Internal API
     public Long getUserIdByUserLink(String userLink) {
-        return userRepository.findByUserLink(userLink).getId();
+        return userRepository.findByUserLink(userLink).orElseThrow().getId();
     }
 
     public BaseUserResponseDto getUserById(Long userId) {
@@ -88,7 +91,7 @@ public class UserService {
     }
 
     public BaseUserResponseDto getUserByUserLink(String userLink) {
-        User user = userRepository.findByUserLink(userLink);
+        User user = userRepository.findByUserLink(userLink).orElseThrow();
 
         return getBaseUserResponseDto(user);
     }

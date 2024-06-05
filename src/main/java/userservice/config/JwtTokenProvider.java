@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,7 @@ import java.util.Base64;
 import java.util.Date;
 
 @Configuration
+@Slf4j
 public class JwtTokenProvider {
 
     private final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
@@ -64,7 +66,7 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        logger.info("[resolveToken] HTTP 헤더에서 Token 값 추출");
+        log.info("[resolveToken] HTTP 헤더에서 Token 값 추출");
 
         String tokenHeader = request.getHeader("Authorization");
 

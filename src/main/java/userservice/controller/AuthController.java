@@ -9,12 +9,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import userservice.domain.User;
 import userservice.dto.request.BaseUserRequestDto;
 import userservice.dto.request.EmailAuthRequestDto;
 import userservice.dto.request.LoginRequestDto;
 import userservice.dto.response.LoginResponseDto;
 import userservice.dto.response.TokenResponseDto;
 import userservice.service.AuthService;
+import userservice.service.CategoryService;
 import userservice.service.MailService;
 import userservice.service.UserService;
 
@@ -27,6 +29,7 @@ public class AuthController {
     private final AuthService authService;
     private final MailService mailService;
     private final UserService userService;
+    private final CategoryService categoryService;
 
     @Operation(summary = "회원가입", description = "사용자가 회원가입을 요청합니다.")
     @ApiResponses(value = {
@@ -35,7 +38,8 @@ public class AuthController {
     })
     @PostMapping("register")
     public ResponseEntity<Void> register(@RequestBody BaseUserRequestDto baseUserRequestDto) {
-        authService.register(baseUserRequestDto);
+        User user = authService.register(baseUserRequestDto);
+        categoryService.createCategoryUsingUserId(user.getId(), baseUserRequestDto.categoryName());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

@@ -12,6 +12,7 @@ import userservice.dto.request.BaseUserUpdateRequestDto;
 import userservice.global.BaseTimeEntity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static userservice.global.UserUpdateValue.*;
@@ -66,21 +67,22 @@ public class User extends BaseTimeEntity {
     private String voiceModelUrl;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Category> categoryList = new ArrayList<>();
+    private List<Category> categoryList = Collections.synchronizedList(new ArrayList<>());
 
     @OneToMany(mappedBy = "followingUser", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Follow> followingList = new ArrayList<>();
+    private List<Follow> followingList = Collections.synchronizedList(new ArrayList<>());
 
     @OneToMany(mappedBy = "followerUser", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Follow> followerList = new ArrayList<>();
+    private List<Follow> followerList = Collections.synchronizedList(new ArrayList<>());
 
-    public static User createUser(BaseUserRequestDto baseUserRequestDto) {
+    public static User createUser(BaseUserRequestDto baseUserRequestDto, String encryptedPw) {
 
         return User.builder()
                 .name(baseUserRequestDto.name())
                 .email(baseUserRequestDto.email())
-                .password(new BCryptPasswordEncoder().encode(baseUserRequestDto.password()))
+                .password(encryptedPw)
                 .nickname(baseUserRequestDto.nickname())
+                .introduce(baseUserRequestDto.introduce())
                 .profileUrl(baseUserRequestDto.profileUrl())
                 .userLink(baseUserRequestDto.userLink())
                 .build();
@@ -98,7 +100,7 @@ public class User extends BaseTimeEntity {
     }
 
     public void changePassword(String encryptedPw) {
-        this.password = updateValue(this.password, encryptedPw);
+        this.password = encryptedPw;
     }
 
     public void addCategory(Category category) {

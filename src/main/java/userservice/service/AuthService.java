@@ -1,5 +1,8 @@
 package userservice.service;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,27 +29,42 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
     private final CategoryService categoryService;
+    private final MeterRegistry meterRegistry;
+
+    private Counter registerCounter;
+    private Counter loginSuccessCounter;
+    private Counter loginFailureCounter;
+
+    @PostConstruct
+    public void init() {
+        this.registerCounter = meterRegistry.counter("user_register_count");
+        this.loginSuccessCounter = meterRegistry.counter("user_login_success_count");
+        this.loginFailureCounter = meterRegistry.counter("user_login_failure_count");
+    }
 
     public User register(BaseUserRequestDto baseUserRequestDto) {
         String encryptedPw = passwordEncoder.encode(baseUserRequestDto.password());
         User user = User.createUser(baseUserRequestDto, encryptedPw);
         userRepository.save(user);
+        registerCounter.increment(); // 회원가입 시 메트릭 증가
         return user;
     }
 
-
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-
         User user = userRepository.findByEmail(loginRequestDto.email()).orElseThrow();
-        if (user == null)
+        if (user == null) {
+            loginFailureCounter.increment(); // 로그인 실패 시 메트릭 증가
             return LoginResponseDto.builder()
                     .tokenResponseDto(new TokenResponseDto(417, "존재하지 않는 이메일입니다.", null, null))
                     .build();
+        }
 
-        if (!passwordEncoder.matches(loginRequestDto.password(), user.getPassword()))
+        if (!passwordEncoder.matches(loginRequestDto.password(), user.getPassword())) {
+            loginFailureCounter.increment(); // 로그인 실패 시 메트릭 증가
             return LoginResponseDto.builder()
                     .tokenResponseDto(new TokenResponseDto(400, "비밀번호가 일치하지 않습니다.", null, null))
                     .build();
+        }
 
         String refreshToken = "Bearer " + jwtTokenProvider.createRefreshToken(user.getId());
 
@@ -64,12 +82,12 @@ public class AuthService {
                 .build();
 
         redisTemplate.opsForValue().set(String.valueOf(user.getId()), refreshToken);
+        loginSuccessCounter.increment(); // 로그인 성공 시 메트릭 증가
         return loginResponseDto;
     }
 
     public void logout(HttpServletRequest httpServletRequest) {
         String accessToken = jwtTokenProvider.resolveToken(httpServletRequest);
-//        jwtTokenProvider.validateRefreshToken(accessToken);
         String userId = jwtTokenProvider.getUserId(accessToken);
         log.info("[Token Info] 해당 억세스 토큰의 사용자 아이디: {}", userId);
         redisTemplate.delete(userId);
@@ -93,7 +111,7 @@ public class AuthService {
         if (redisRefreshToken == null) {
             return TokenResponseDto.builder()
                     .code(401)
-                    .message("이미 로그아웃한 사용자압니다.")
+                    .message("이미 로그아웃한 사용자입니다.")
                     .build();
         }
 

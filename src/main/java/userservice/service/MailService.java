@@ -1,5 +1,8 @@
 package userservice.service;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +23,15 @@ public class MailService {
 
     private final RedisTemplate<String, String> redisTemplate;
     private final JavaMailSender javaMailSender;
+    private final MeterRegistry meterRegistry;
+
+    private Counter mailSendCounter;
+
+    @PostConstruct
+    public void init() {
+        this.mailSendCounter = meterRegistry.counter("mail_send_count");
+    }
+
     private static int authNumber;
 
     // 랜덤으로 숫자 생성
@@ -39,6 +51,7 @@ public class MailService {
                         "<br>" +
                         "감사합니다."; //이메일 내용 삽입
         mailSend(setFrom, email, title, content);
+        mailSendCounter.increment(); // 이메일 전송 시 메트릭 증가
     }
 
     private void mailSend(String setFrom, String toMail, String title, String content) {

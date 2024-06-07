@@ -97,6 +97,7 @@ public class JwtTokenProvider {
                 .build()
                 .parseClaimsJws(accessToken);
         logger.info("[getUserIdFromAccessToken] UserId 추출");
+        log.info("[UserId] : " + String.valueOf(claimsJws.getBody().getSubject()));
         return claimsJws.getBody().getSubject();
     }
 }

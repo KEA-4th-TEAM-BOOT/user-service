@@ -48,10 +48,10 @@ public class FollowService {
                 .toList();
     }
 
-    public List<FollowResponseDto> getFollowedList(HttpServletRequest httpServletRequest) {
+    public List<FollowResponseDto> getFollowerList(HttpServletRequest httpServletRequest) {
         Long userId = tokenUtils.getUserIdFromToken(jwtTokenProvider.resolveToken(httpServletRequest));
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
-        return user.getFollowingList().stream()
+        return user.getFollowerList().stream()
                 .map(follower -> new FollowResponseDto(
                         follower.getFollowingUser().getId(),
                         follower.getFollowerUser().getNickname(),

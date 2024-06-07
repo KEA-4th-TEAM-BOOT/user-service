@@ -18,6 +18,8 @@ import userservice.dto.response.LoginResponseDto;
 import userservice.dto.response.TokenResponseDto;
 import userservice.repository.UserRepository;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -51,37 +53,41 @@ public class AuthService {
     }
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        User user = userRepository.findByEmail(loginRequestDto.email()).orElseThrow();
-        if (user == null) {
+      
+        Optional<User> user = userRepository.findByEmail(loginRequestDto.email());
+        if (user.isEmpty()) {
             loginFailureCounter.increment(); // 로그인 실패 시 메트릭 증가
+          
             return LoginResponseDto.builder()
                     .tokenResponseDto(new TokenResponseDto(417, "존재하지 않는 이메일입니다.", null, null))
                     .build();
         }
 
-        if (!passwordEncoder.matches(loginRequestDto.password(), user.getPassword())) {
+        log.info(String.valueOf(passwordEncoder.matches(loginRequestDto.password(), user.get().getPassword())));
+      
+        if (!passwordEncoder.matches(loginRequestDto.password(), user.get().getPassword())) {
             loginFailureCounter.increment(); // 로그인 실패 시 메트릭 증가
             return LoginResponseDto.builder()
                     .tokenResponseDto(new TokenResponseDto(400, "비밀번호가 일치하지 않습니다.", null, null))
                     .build();
         }
 
-        String refreshToken = "Bearer " + jwtTokenProvider.createRefreshToken(user.getId());
+        String refreshToken = "Bearer " + jwtTokenProvider.createRefreshToken(user.get().getId());
 
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
                 .tokenResponseDto(TokenResponseDto.builder()
                         .code(200)
                         .message("로그인 성공")
-                        .accessToken("Bearer " + jwtTokenProvider.createAccessToken(user.getId()))
+                        .accessToken("Bearer " + jwtTokenProvider.createAccessToken(user.get().getId()))
                         .refreshToken(refreshToken)
                         .build()
                 )
-                .userId(user.getId())
-                .userLink(user.getUserLink())
-                .profileUrl(user.getProfileUrl())
+                .userId(user.get().getId())
+                .userLink(user.get().getUserLink())
+                .profileUrl(user.get().getProfileUrl())
                 .build();
 
-        redisTemplate.opsForValue().set(String.valueOf(user.getId()), refreshToken);
+        redisTemplate.opsForValue().set(String.valueOf(user.get().getId()), refreshToken);
         loginSuccessCounter.increment(); // 로그인 성공 시 메트릭 증가
         return loginResponseDto;
     }

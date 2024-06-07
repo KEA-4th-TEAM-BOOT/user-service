@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import userservice.config.JwtTokenProvider;
 import userservice.controller.SubCategoryController;
@@ -31,6 +32,7 @@ public class UserService {
     private final SubCategoryController subCategoryController;
     private final SubCategoryService subCategoryService;
     private final TokenUtils tokenUtils;
+    private final PasswordEncoder passwordEncoder;
 
     public void deleteUser(HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
@@ -61,7 +63,7 @@ public class UserService {
     public void changePassword(String token, String rawPassword) {
         Long userId = tokenUtils.getUserIdFromToken(token);
         User user = userRepository.findById(userId).orElseThrow();
-        String encryptedPw = new BCryptPasswordEncoder().encode(rawPassword);
+        String encryptedPw = passwordEncoder.encode(rawPassword);
         user.changePassword(encryptedPw);
     }
 

@@ -28,7 +28,7 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String base64Secret;
     private Key secretKey;
-    private final long accessTokenTime = 24L * 60 * 60 * 1000; // 하루 토큰 유효
+    private final long accessTokenTime = 7L * 24L * 60 * 60 * 1000; // 하루 토큰 유효 -> 일주일로
     private final long refreshTokenTime = 30L * 24L * 60 * 60 * 1000; // 1달 토큰 유효
 
     @PostConstruct
@@ -97,6 +97,7 @@ public class JwtTokenProvider {
                 .build()
                 .parseClaimsJws(accessToken);
         logger.info("[getUserIdFromAccessToken] UserId 추출");
+        log.info("[UserId] : " + String.valueOf(claimsJws.getBody().getSubject()));
         return claimsJws.getBody().getSubject();
     }
 }

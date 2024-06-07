@@ -51,8 +51,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
         LoginResponseDto loginResponseDto = authService.login(loginRequestDto);
-        if(loginResponseDto.userLink() == null){
-            return ResponseEntity.badRequest().build();
+        if(loginResponseDto.userId() == null){
+            return ResponseEntity.badRequest().body(loginResponseDto);
         }
         return ResponseEntity.ok(loginResponseDto);
     }

@@ -13,11 +13,13 @@ public class TokenUtils {
     }
 
     public Long getUserIdFromToken(String token) {
-        String accessToken = extractAccessToken(token);
-        return Long.valueOf(jwtTokenProvider.getUserId(accessToken));
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);  // 'Bearer '를 제거합니다.
+        }
+        if (token != null) {
+            return Long.valueOf(jwtTokenProvider.getUserId(token));
+        }
+        return null;  // token이 null인 경우 null을 반환합니다.
     }
 
-    public String extractAccessToken(String token) {
-        return token.substring(7); // Assuming "Bearer " prefix
-    }
 }

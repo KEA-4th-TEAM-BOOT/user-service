@@ -50,7 +50,7 @@ public class FollowController {
     })
     @GetMapping("/follower")
     public ResponseEntity<List<FollowResponseDto>> getFollowerList(HttpServletRequest httpServletRequest) {
-        List<FollowResponseDto> followedList = followService.getFollowedList(httpServletRequest);
+        List<FollowResponseDto> followedList = followService.getFollowerList(httpServletRequest);
         return ResponseEntity.ok(followedList);
     }
 

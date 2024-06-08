@@ -50,8 +50,8 @@ public class FollowController {
     })
     @GetMapping("/follower")
     public ResponseEntity<List<FollowResponseDto>> getFollowerList(HttpServletRequest httpServletRequest) {
-        List<FollowResponseDto> followedList = followService.getFollowerList(httpServletRequest);
-        return ResponseEntity.ok(followedList);
+        List<FollowResponseDto> followerList = followService.getFollowerList(httpServletRequest);
+        return ResponseEntity.ok(followerList);
     }
 
     @Operation(summary = "팔로우 삭제", description = "사용자가 다른 사용자에 대한 팔로우를 취소합니다.")

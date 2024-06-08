@@ -5,8 +5,6 @@ import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import userservice.config.UserSecurityConfig;
 import userservice.dto.request.BaseUserRequestDto;
 import userservice.dto.request.BaseUserUpdateRequestDto;
 import userservice.global.BaseTimeEntity;

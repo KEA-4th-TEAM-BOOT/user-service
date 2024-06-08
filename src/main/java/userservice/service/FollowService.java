@@ -43,7 +43,7 @@ public class FollowService {
                         follower.getFollowerUser().getNickname(),
                         follower.getFollowerUser().getEmail(),
                         follower.getFollowerUser().getProfileUrl(),
-                        follower.getFollowingUser().getUserLink())
+                        follower.getFollowerUser().getUserLink())
                 )
                 .toList();
     }
@@ -52,12 +52,12 @@ public class FollowService {
         Long userId = tokenUtils.getUserIdFromToken(jwtTokenProvider.resolveToken(httpServletRequest));
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
         return user.getFollowerList().stream()
-                .map(follower -> new FollowResponseDto(
-                        follower.getFollowingUser().getId(),
-                        follower.getFollowerUser().getNickname(),
-                        follower.getFollowerUser().getEmail(),
-                        follower.getFollowerUser().getProfileUrl(),
-                        follower.getFollowingUser().getUserLink())
+                .map(following -> new FollowResponseDto(
+                        following.getFollowingUser().getId(),
+                        following.getFollowingUser().getNickname(),
+                        following.getFollowingUser().getEmail(),
+                        following.getFollowingUser().getProfileUrl(),
+                        following.getFollowingUser().getUserLink())
                 )
                 .toList();
     }

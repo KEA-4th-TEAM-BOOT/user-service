@@ -21,6 +21,33 @@ import java.util.Collections;
 @Configuration
 @Slf4j
 public class UserSecurityConfig {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(Customizer.withDefaults())  // CORS 설정을 적용
+                .csrf(AbstractHttpConfigurer::disable)  // CSRF 비활성화
+                .authorizeHttpRequests(request -> {
+                    request.anyRequest().permitAll();
+                    log.info("Security filter processing request");
+                })
+                .httpBasic(Customizer.withDefaults());  // HTTP Basic 인증 활성화
+
+        return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(false);
+        config.addAllowedOrigin("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

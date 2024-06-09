@@ -107,27 +107,23 @@ public class UserService {
         List<Follow> followerList = user.getFollowerList().stream().toList();
 
         List<FollowResponseDto> followingUsers = followingList.stream()
-                .map(following -> {
-                    User followingUser = following.getFollowingUser();
-                    return new FollowResponseDto(
-                            followingUser.getId(),
-                            followingUser.getNickname(),
-                            followingUser.getEmail(),
-                            followingUser.getProfileUrl(),
-                            followingUser.getUserLink());
-                })
+                .map(follower -> new FollowResponseDto(
+                        follower.getFollowerUser().getId(),
+                        follower.getFollowerUser().getNickname(),
+                        follower.getFollowerUser().getEmail(),
+                        follower.getFollowerUser().getProfileUrl(),
+                        follower.getFollowerUser().getUserLink())
+                )
                 .toList();
 
         List<FollowResponseDto> followerUsers = followerList.stream()
-                .map(follower -> {
-                    User followerUser = follower.getFollowerUser();
-                    return new FollowResponseDto(
-                            followerUser.getId(),
-                            followerUser.getNickname(),
-                            followerUser.getEmail(),
-                            followerUser.getProfileUrl(),
-                            followerUser.getUserLink());
-                })
+                .map(following -> new FollowResponseDto(
+                        following.getFollowingUser().getId(),
+                        following.getFollowingUser().getNickname(),
+                        following.getFollowingUser().getEmail(),
+                        following.getFollowingUser().getProfileUrl(),
+                        following.getFollowingUser().getUserLink())
+                )
                 .toList();
 
         return BaseUserResponseDto.of(user, categoryNames, followingUsers, followerUsers);

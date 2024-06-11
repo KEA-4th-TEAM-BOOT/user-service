@@ -43,7 +43,8 @@ public class FollowService {
                         follower.getFollowerUser().getNickname(),
                         follower.getFollowerUser().getEmail(),
                         follower.getFollowerUser().getProfileUrl(),
-                        follower.getFollowerUser().getUserLink())
+                        follower.getFollowerUser().getUserLink(),
+                        follower.getFollowerUser().getIntroduce())
                 )
                 .toList();
     }
@@ -57,7 +58,8 @@ public class FollowService {
                         following.getFollowingUser().getNickname(),
                         following.getFollowingUser().getEmail(),
                         following.getFollowingUser().getProfileUrl(),
-                        following.getFollowingUser().getUserLink())
+                        following.getFollowingUser().getUserLink(),
+                        following.getFollowerUser().getIntroduce())
                 )
                 .toList();
     }

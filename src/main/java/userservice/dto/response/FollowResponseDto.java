@@ -6,6 +6,7 @@ public record FollowResponseDto(
         String nickname,
         String email,
         String profileUrl,
-        String userLink
+        String userLink,
+        String introduce
 ) {
 }

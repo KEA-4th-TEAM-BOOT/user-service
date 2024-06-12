@@ -128,7 +128,7 @@ public class UserService {
                 )
                 .toList();
 
-        List<FollowResponseDto> nonFollowUsers = userRepository.findRandomUsers(5).stream()
+        List<FollowResponseDto> nonFollowUsers = userRepository.findRandomUsers(6).stream()
                 .map(nonFollowUser -> new FollowResponseDto(
                         nonFollowUser.getId(),
                         nonFollowUser.getNickname(),

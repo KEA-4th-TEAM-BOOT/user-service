@@ -128,6 +128,18 @@ public class UserService {
                 )
                 .toList();
 
-        return BaseUserResponseDto.of(user, categoryNames, followingUsers, followerUsers);
+        List<FollowResponseDto> nonFollowUsers = userRepository.findRandomUsers(5).stream()
+                .map(nonFollowUser -> new FollowResponseDto(
+                        nonFollowUser.getId(),
+                        nonFollowUser.getNickname(),
+                        nonFollowUser.getEmail(),
+                        nonFollowUser.getProfileUrl(),
+                        nonFollowUser.getUserLink(),
+                        nonFollowUser.getIntroduce()
+                ))
+                .toList();
+
+
+        return BaseUserResponseDto.of(user, categoryNames, followingUsers, followerUsers, nonFollowUsers);
     }
 }

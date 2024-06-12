@@ -21,9 +21,10 @@ public record BaseUserResponseDto(
         String voiceModelUrl,
         List<CategoryResponseDto> categoryList,
         List<FollowResponseDto> followingList,
-        List<FollowResponseDto> followerList
+        List<FollowResponseDto> followerList,
+        List<FollowResponseDto> nonFollowList
 ) {
-    public static BaseUserResponseDto of(User user, List<CategoryResponseDto> categoryList, List<FollowResponseDto> followingList, List<FollowResponseDto> followerList) {
+    public static BaseUserResponseDto of(User user, List<CategoryResponseDto> categoryList, List<FollowResponseDto> followingList, List<FollowResponseDto> followerList, List<FollowResponseDto> nonFollowList) {
         return BaseUserResponseDto.builder()
                 .name(user.getName())
                 .email(user.getEmail())
@@ -39,6 +40,7 @@ public record BaseUserResponseDto(
                 .categoryList(categoryList)
                 .followingList(followingList)
                 .followerList(followerList)
+                .nonFollowList(nonFollowList)
                 .build();
     }
 }
